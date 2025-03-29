@@ -1,4 +1,4 @@
-const MY_HOST = "app.host.domain";
+const MY_HOST = "estreui.mpsolutions.kr/App1";
 
 const CACHE_VERSION_NAME = "cache-v1.0";
  
