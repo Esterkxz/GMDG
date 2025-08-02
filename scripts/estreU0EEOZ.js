@@ -73,6 +73,12 @@ const h4 = "h4";
 const h5 = "h5";
 const ul = "ul";
 const li = "li";
+const tbl = "table";
+const thd = "thead";
+const tbd = "tbody";
+const tft = "tfoot";
+const tr = "tr";
+const td = "td";
 const br = "br";
 const hr = "hr";
 const lbl = "label";
@@ -136,8 +142,8 @@ const gtt = hee("gt");
 const itt = (tagName, attributes = {}, enumables = []) => {
     let texts = [lt + tagName];
 
-    if (isNotNully(attributes) && typeObject(attributes)) forkv((k, v) => { if (isNotNullAndEmpty(k) && isNotNully(v)) texts.push(k + eq + v4(v)); });
-    if (isNotNully(enumables) && typeObject(enumables) && isArray(enumables)) forof(v => { if (isNotNullAndEmpty(v)) texts.push(v); });
+    if (isNotNully(attributes) && typeObject(attributes)) forkv(attributes, (k, v) => { if (isNotNullAndEmpty(k) && isNotNully(v)) texts.push(k + eq + v4(v)); });
+    if (isNotNully(enumables) && typeObject(enumables) && isArray(enumables)) forof(enumables, v => { if (isNotNullAndEmpty(v)) texts.push(v); });
 
     texts.push(ss + gt);
     return texts.join(s);
@@ -151,8 +157,8 @@ const tip = (type, name, className, id) => itt(inp, { class: className, id, type
 const tag = (tagName, innerHtml = "", attributes = {}, enumables = []) => {
     let texts = [lt + tagName];
 
-    if (isNotNully(attributes) && typeObject(attributes)) forkv((k, v) => { if (isNotNullAndEmpty(k) && isNotNully(v)) texts.push(k + eq + v4(v)); });
-    if (isNotNully(enumables) && typeObject(enumables) && isArray(enumables)) forof(v => { if (isNotNullAndEmpty(v)) texts.push(v); });
+    if (isNotNully(attributes) && typeObject(attributes)) forkv(attributes, (k, v) => { if (isNotNullAndEmpty(k) && isNotNully(v)) texts.push(k + eq + v4(v)); });
+    if (isNotNully(enumables) && typeObject(enumables) && isArray(enumables)) forof(enumables, v => { if (isNotNullAndEmpty(v)) texts.push(v); });
 
     return (texts.join(s) + gt) + innerHtml + (lt + ss + tagName + gt);
 }
@@ -165,9 +171,9 @@ const ttt = (tagName, attributes = {}, enumables = []) => tag(tagName, "", attri
 const eb = (tagName, attributes = {}, enumables = [], property = {}) => {
     const elem = document.createElement(tagName);
 
-    if (isNotNully(attributes) && typeObject(attributes)) forkv((k, v) => { if (isNotNullAndEmpty(k) && isNotNully(v)) elem.setAttribute(k, v); });
-    if (isNotNully(enumables) && typeObject(enumables) && isArray(enumables)) forof(v => { if (isNotNullAndEmpty(v)) elem.setAttribute(v, es); });
-    if (isNotNully(property) && typeObject(property)) forkv((k, v) => { if (isNotNullAndEmpty(k)) elem[k] = v; });
+    if (isNotNully(attributes) && typeObject(attributes)) forkv(attributes, (k, v) => { if (isNotNullAndEmpty(k) && isNotNully(v)) elem.setAttribute(k, v); });
+    if (isNotNully(enumables) && typeObject(enumables) && isArray(enumables)) forof(enumables, v => { if (isNotNullAndEmpty(v)) elem.setAttribute(v, es); });
+    if (isNotNully(property) && typeObject(property)) forkv(property, (k, v) => { if (isNotNullAndEmpty(k)) elem[k] = v; });
 
     return elem;
 }
@@ -195,6 +201,7 @@ const m = {
     get tp() { return "type"; },
     get ro() { return "readonly"; },
     get st() { return "style"; },
+    get ph() { return "placeholder"; },
     get t() { return "title"; },
 };
 
@@ -801,8 +808,8 @@ class EsLocale {
 
             "dateDataDivider": "-",
             "timeDataDivider": ":",
-            "dateDevider": "/",
-            "timeDevider": ":",
+            "dateDivider": "/",
+            "timeDivider": ":",
 
             "dataDataSequence": "ymd",
             "dateSequence": "mdy",
@@ -869,8 +876,8 @@ class EsLocale {
 
             "dateDataDivider": "-",
             "timeDataDivider": ":",
-            "dateDevider": ".",
-            "timeDevider": ":",
+            "dateDivider": ".",
+            "timeDivider": ":",
 
             "dateDataSequence": "ymd",
             "dateSequence": "ymd",
@@ -948,7 +955,7 @@ const Ecal = {
         const forYear = date.getFullYear();
         const forMonth = date.getMonth();
         const firstDateOfNextMonth = new Date(forYear, forMonth + 1, 1);
-        const beginOfNextMonth = Ecal.getBeginSundayAndWeek(firstDateOfNextMonth);
+        const beginOfNextMonth = this.getBeginSundayAndWeek(firstDateOfNextMonth);
         
         if (date.getTime() >= beginOfNextMonth.date.getTime() && firstDateOfNextMonth.getDay() < 5) {
             const firstDateOfWeek = beginOfNextMonth.date;
@@ -961,7 +968,7 @@ const Ecal = {
             const forDay = date.getDay();
             const weekBeginDate = forDate - forDay;
 
-            const monthBeginSunday = Ecal.getBeginSundayAndWeek(date);
+            const monthBeginSunday = this.getBeginSundayAndWeek(date);
             const beginDate = monthBeginSunday.date;
             var beginWeek = monthBeginSunday.week;
             date.setDate(weekBeginDate);
@@ -975,9 +982,13 @@ const Ecal = {
                 const m0 = date.getMonth();
                 return { year: date.getFullYear(), month: m0 + 1, month0: m0, week: beginWeek };
             } else {
+                const lastDateOfPrevMonth = new Date(forYear, forMonth, 0);
+                const beginDateOfLastWeekOfPrevMonth = lastDateOfPrevMonth.getDate() - lastDateOfPrevMonth.getDay();
+                const weekBeginDate = new Date(forYear, forMonth, beginDateOfLastWeekOfPrevMonth);
+                const monthBeginSunday = this.getBeginSundayAndWeek(weekBeginDate);
                 const thisYear = beginDate.getFullYear();
                 const thisMonth = beginDate.getMonth();
-                const thisWeek = this.getYearMonthWeek(thisYear, thisMonth, beginDate.getDate() - 14).week + 2;
+                const thisWeek = monthBeginSunday.week + parseInt((weekBeginDate.getDate() - monthBeginSunday.date.getDate()) / 7);//this.getYearMonthWeek(thisYear, thisMonth, beginDate.getDate() - 14).week + 2;
                 return { year: thisYear, month: thisMonth + 1, month0: thisMonth, week: thisWeek };
             }
         }
@@ -1152,6 +1163,7 @@ const Ecal = {
 
     getDateOffset(year = new Date(), month0, date) {
         if (year instanceof Date) date = new Date(year.getFullYear(), year.getMonth(), year.getDate());
+        else if (typeof year == STR && year.length == 10 && year.indexOf(hp) > -1) date = new Date(year);
         else date = new Date(year, month0, date);
         
         return parseInt(((date.getTime() / 60 / 60 / 1000) + (date.getTimezoneOffset() / -60)) / 24);
@@ -1164,6 +1176,10 @@ const Ecal = {
 
     getDateSetFrom(offset) {
         return this.getDateSet(this.getDateFrom(offset));
+    },
+
+    getDateStringFrom(offset) {
+        return this.getDateString(this.getDateFrom(offset));
     },
 
     getMonthOffset(year, month0) {
@@ -1182,6 +1198,26 @@ const Ecal = {
 
     getDateSetFromMonth(offset, date = 1) {
         return this.getDateSet(this.getDateFromMonth(offset, date));
+    },
+
+    getDateArray(date = new Date()) {
+        return [date.getFullYear(), v2d(date.getMonth() + 1), v2d(date.getDate())];
+    },
+
+    getDateString(date = new Date(), divider = hp) {
+        return this.getDateArray(date).join(divider);
+    },
+
+    getTimeArray(date = new Date()) {
+        return [date.getHours(), v2d(date.getMinutes()), v2d(date.getSeconds())];
+    },
+
+    getTimeString(date = new Date(), divider = cl) {  
+        return this.getTimeArray(date).join(divider);
+    },
+
+    getDateTimeString(date = new Date()) {
+        return [this.getDateString(date), this.getTimeString(date)].join(s);
     },
 
     getDayEmoji(date) {
@@ -1217,6 +1253,11 @@ const Ecal = {
     getDateSet(date = new Date(), lang = this.defaultLanguage) {
         const month0 = date.getMonth();
         const day = date.getDay();
+        const dateArray = this.getDateArray(date);
+        const dateString = dateArray.join(hp);
+        const timeArray = this.getTimeArray(date);
+        const timeString = timeArray.join(cl);
+        const dateTimeString = [this.getDateString(date), timeString].join(s);
         return {
             ymw: this.getYearMonthWeek(date),
             year: date.getFullYear(),
@@ -1237,11 +1278,18 @@ const Ecal = {
             dayTextFull: EsLocale.get("weekdaysFull", lang)[day],
             dayTextShort: EsLocale.get("weekdaysShort", lang)[day],
             dayEmoji: this.getDayEmoji(day),
+            dateArray,
+            dateString,
             time: date.getTime(),
+            timeArray,
+            timeString,
+            dateTimeString,
             dateOrigin: new Date(date),
         }
     },
 
+    /** 시간순 정렬 함수 */
+    byTime: (a, b) => a.time - b.time,
 
     eoo
 };
@@ -1392,6 +1440,16 @@ const Escd = {
         }
     },
 
+    getCategoryEmoji(category) {
+        return matchCase(category, {
+            "holiday": "🏠",
+            "vacation": "🏖️",
+            "closed": "⛓️",
+            "ceremony": "🎉",
+            "exam": "💯",
+            [def]: "📅",
+        });
+    },
 
     eoo
 };
