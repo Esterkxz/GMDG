@@ -205,349 +205,333 @@ class AppActionHandler {
     }
 
 
-    somethingDoWhileAnything() {
-        //show blinded loading indicator
-        const waiter = wait();
-        //register to async manager for monitor async work for prevent leak
-        let currentWid = EstreAsyncManager.beginWork("[" + "work title" + "]" + "detail", this.hostId);
-
-        //<= before process
-
-        setTimeout(() => {// <= somthing did wile async action
-
-            //<= after process
-
-            //unregister from async manager
-            EstreAsyncManager.endOfWork(currentWid);
-            //hide blinded loading indicator
-            go(waiter);
-        }, 3000);
-        //<= You must catch error case for do unregister from async manager and close loading indicator
-    }
-}
-
-
-
-
-// Local/Session Storage key constants
-const ESTRE_UI_APP_SESSION_BLOCK = "ESTRE_UI_APP_SESSION_BLOCK";
-
-
-// Authed API communication manager example
-const APP_API_SERVER = "https://my.own.api.server/api";
-
-const PATH_LOGIN = "/login";
-
-const PATH_SEND_NOTHING = "/takeNothing";
-
-
-class AppApiUrl {
-    static get login() { return APP_API_SERVER + PATH_LOGIN; }
-    static get sendNothing() { return APP_API_SERVER + PATH_SEND_NOTHING; }
-}
-
-
-class AppSessionManager {
-
-    // class property
-
-
-    // static methods
-
-
-    // constants
-    hostId = "AppSessionManager";
-
-    get #emptyUser() {
-        return {};
-    }
-    get #emptySession() {
-        return {};
-    }
-    
-
-    // instnace property
-    #storageHandler = null;
-    get storageHandler() { return this.#storageHandler; }
-
-    #apiUrlCollection = null;
-    get apiUrlCollection() { return this.#apiUrlCollection; }
-
-    #onPrepare = null;
-    #onCheckedAuth = null;
-    #onReady = null;
-
-    #user = this.#emptyUser;
-
-    #session = this.#emptySession;
-
-
-    #callbackSetUser = null;
-
-
-    // geter setter
-    get #authToken() {
-        return this.#session.loginToken;
-    }
-
-
-    #setUser(infoSet) {
-        this.#user = infoSet;
-
-        this.#callbackSetUser(this.userName);
-    }
-
-    get userName() { return this.#user.name; }
-
-
-
-    constructor(apiUrlCollection, storageHandler, callbackSetUser = (userName) => {}) {
-        this.#apiUrlCollection = apiUrlCollection;
-        this.#storageHandler = storageHandler;
-        this.#callbackSetUser = callbackSetUser;
-    }
-
-    
-    init(onPrepare, onCheckedAuth, onReady) {
-        if (this != appSessionManager) return new Error("Can not duplicate session manager");
-
-        this.#onPrepare = onPrepare;
-        this.#onCheckedAuth = onCheckedAuth;
-        this.#onReady = onReady;
-
-        this.#checkUpSession();
-    }
-
-    async #checkUpSession() {
-        let block = this.storageHandler.getString(ESTRE_UI_APP_SESSION_BLOCK);
-
-        if (block != null && block != "") {
-            this.#extractBlock(block);
-
-            let token = this.#authToken;
-            //console.log(token);
-
-            this.#bringOnPrepare(true);
-
-            if (token != null && token.length > 0) {
-                this.#bringOnCheckedAuth(true);
-                this.#bringOnReady(true);
-            } else {
-                this.#bringOnCheckedAuth(false);
-                this.#bringOnReady(true);
-            };
-            
-        } else {
-            
-            this.#bringOnPrepare(false);
-
-            this.#onCheckedAuth = null;
-
-            this.#bringOnReady(true);
-        }
-
-    }
-
-    #bringOnPrepare(isTokenExist) {
-        this.#onPrepare(isTokenExist);
-        this.#onPrepare = null;
-    }
-
-    #bringOnCheckedAuth(isOnAuth) {
-        this.#onCheckedAuth(isOnAuth);
-        this.#onCheckedAuth = null;
-    }
-
-    #bringOnReady(isStraight) {
-        this.#onReady(isStraight);
-        this.#onReady = null;
-    }
-
-    #clearSession() {
-        this.#user = this.#emptyUser;
-        this.#session = this.#emptySession;
-        this.storageHandler.setString(ESTRE_UI_APP_SESSION_BLOCK);
-    }
-
-    #extractBlock(block) {
-        let set = Jcodd.parse(atob(block));
-        this.#session = set.session;
-        this.#user = set.user;
-    }
-
-    #solidBlock() {
-        return btoa(Jcodd.coddify({ session: this.#session, user: this.#user }));
-    }
-
-    #fetchApiPost(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
-        return this.#fetchApiWithBody(url, data, callbackSuccess, callbackFailure, "POST", fetchKind);
-    }
-
-    #fetchApiPatch(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
-        return this.#fetchApiWithBody(url, data, callbackSuccess, callbackFailure, "PATCH", fetchKind);
-    }
-
-    #fetchApiPut(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
-        return this.#fetchApiWithBody(url, data, callbackSuccess, callbackFailure, "PUT", fetchKind);
-    }
-
-    #fetchApiWithBody(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, request = "POST", fetchKind = "communication") {
-
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if (location.href.indexOf("http://") > -1) {
-            headers.append("Access-Control-Request-Private-Network", "true");
-        }
+    openFile() {
         
-        let content = data;
-        let body = JSON.stringify(content);
-        console.log("request: [" + request + "] " + url + "\n" + body);
-
-        let fetchWid = EstreAsyncManager.beginWork("[" + request + "]" + url, this.hostId);
-        fetch (url, {
-            method: request,
-            headers: headers,
-            body: body
-        }).then((response) => {
-            if (response.ok) {
-                try {
-                    return response.json();
-                } catch (ex) {
-                    console.log(ex.name + "\n" + ex.message);
-                    console.log(response);
-                    EstreAsyncManager.endOfWork(fetchWid);
-                    //retry
-                    console.log(fetchKind + " Failure : Server issue");
-                    callbackFailure({ error: "JSON parse failure", response: response });
-                    return response;
-                }
-            } else {
-                console.log(response);
-                EstreAsyncManager.endOfWork(fetchWid);
-                //retry
-                console.log(fetchKind + " Failure : Server error");
-                callbackFailure({ error: "Response is not Ok", response: response });
-                return response;
-            }
-        }).then((resp) => {
-            if (resp != null) {
-                if (resp instanceof Response) return;
-                console.log(resp);
-                
-                if (resp?.resultOk != null) {
-
-                    if (resp.resultOk) {
-                        callbackSuccess(resp);
-                    } else {
-                        switch (resp.resultCode) {
-                            case 1:
-                                //process each resultCode cases
-                                break;
-                        }
-                        console.log(fetchKind + " Failure : (" + resp.resultCode + ")\n" + resp.resultMessage);
-                        callbackFailure(resp);
-                    }
-                } else {
-                    console.log(fetchKind + " Failure : Null resultOk");
-                    callbackFailure({ error: "no result", response: response });
-                }
-            } else {
-                console.log(fetchKind + " Failure : Null response");
-                callbackFailure({ error: "How null is response object", response: response });
-            }
-            EstreAsyncManager.endOfWork(fetchWid);
-        }).catch (error => {
-            console.log(error);
-            //console.log(ex.name + "\n" + ex.message);
-
-            // to do implement retry
-            callbackFailure({ error: "Error on fetch [" + request + "] " + url + "\n" + error, errorOrigin: error });
-            EstreAsyncManager.endOfWork(fetchWid);
-        });
-    }
-
-    #fetchApiAuthedPost(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
-        this.#fetchApiAuthedWithBody(url, data, callbackSuccess, callbackFailure, "POST", fetchKind);
-    }
-
-    #fetchApiAuthedPatch(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
-        this.#fetchApiAuthedWithBody(url, data, callbackSuccess, callbackFailure, "PATCH", fetchKind);
-    }
-
-    #fetchApiAuthedPut(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
-        this.#fetchApiAuthedWithBody(url, data, callbackSuccess, callbackFailure, "PUT", fetchKind);
-    }
-
-    #fetchApiAuthedWithBody(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, request = "POST", fetchKind = "communication") {
-        if (this.#session.loginToken != null && this.#session.loginToken != "") {
-            if (data == null) data = {};
-            data.loginToken = this.#session.loginToken;
-            this.#fetchApiWithBody(url, data, callbackSuccess, callbackFailure, request, fetchKind);
-        } else callbackFailure({ error: "Login token not exist" });
-    }
-
-
-    signIn(id, pw, callbackSuccess = (data) => {}, callbackFailure = (data) => {}) {
-        let data = { LoginID: id, LoginPW: pw };
-
-        this.#fetchApiPost(this.apiUrlCollection.login, data, (data) => {
-            
-            if (data.resultOk) {
-                this.#session.loginToken = data.loginToken;
-
-                this.#setUser({ name: data.userName });
-
-                let block = this.#solidBlock();
-                //console.log("session block: " + block);
-
-                this.storageHandler.setString(ESTRE_UI_APP_SESSION_BLOCK, block);
-                
-                callbackSuccess(data);
-            } else {
-                console.log("Sign in Failure : (" + head.resultCode + ")\n" + head.ResultMessage);
-                callbackFailure(data);
-            }
-        }, (data) => {
-            alert("Sign in Failure : " + (data.error != null ? data.error : "(" + data.resultOk + ")\n" + data.ResultMessage));
-            callbackFailure(data);
-        }, "Sign in");
-    }
-
-    signOut(callbackSuccess = (data) => {}, callbackFailure = (data) => {}) {
-        this.#clearSession();
-        callbackSuccess({});
-        location.reload(); 
-    }
-
-    sendNothing(nothing, callbackSuccess = (data) => {}, callbackFailure = (data) => {}) {
-        this.#fetchApiAuthedPost(this.apiUrlCollection.sendNothing, { nothing }, callbackSuccess, callbackFailure);
     }
 }
 
 
-// setup instances
-const appSessionManager = new AppSessionManager(AppApiUrl, ELS, (userName) => {
-    EstreHandle.activeHandle[uis.appUserHandle]?.forEach(handle => {
-        handle.releaseInfo();//<= Call release user info
-    });
-});
 
-const appActionHandler = new AppActionHandler(appSessionManager);
+
+// // Local/Session Storage key constants
+// const ESTRE_UI_APP_SESSION_BLOCK = "ESTRE_UI_APP_SESSION_BLOCK";
+
+
+// // Authed API communication manager example
+// const APP_API_SERVER = "https://my.own.api.server/api";
+
+// const PATH_LOGIN = "/login";
+
+// const PATH_SEND_NOTHING = "/takeNothing";
+
+
+// class AppApiUrl {
+//     static get login() { return APP_API_SERVER + PATH_LOGIN; }
+//     static get sendNothing() { return APP_API_SERVER + PATH_SEND_NOTHING; }
+// }
+
+
+// class AppSessionManager {
+
+//     // class property
+
+
+//     // static methods
+
+
+//     // constants
+//     hostId = "AppSessionManager";
+
+//     get #emptyUser() {
+//         return {};
+//     }
+//     get #emptySession() {
+//         return {};
+//     }
+    
+
+//     // instnace property
+//     #storageHandler = null;
+//     get storageHandler() { return this.#storageHandler; }
+
+//     #apiUrlCollection = null;
+//     get apiUrlCollection() { return this.#apiUrlCollection; }
+
+//     #onPrepare = null;
+//     #onCheckedAuth = null;
+//     #onReady = null;
+
+//     #user = this.#emptyUser;
+
+//     #session = this.#emptySession;
+
+
+//     #callbackSetUser = null;
+
+
+//     // geter setter
+//     get #authToken() {
+//         return this.#session.loginToken;
+//     }
+
+
+//     #setUser(infoSet) {
+//         this.#user = infoSet;
+
+//         this.#callbackSetUser(this.userName);
+//     }
+
+//     get userName() { return this.#user.name; }
+
+
+
+//     constructor(apiUrlCollection, storageHandler, callbackSetUser = (userName) => {}) {
+//         this.#apiUrlCollection = apiUrlCollection;
+//         this.#storageHandler = storageHandler;
+//         this.#callbackSetUser = callbackSetUser;
+//     }
+
+    
+//     init(onPrepare, onCheckedAuth, onReady) {
+//         if (this != appSessionManager) return new Error("Can not duplicate session manager");
+
+//         this.#onPrepare = onPrepare;
+//         this.#onCheckedAuth = onCheckedAuth;
+//         this.#onReady = onReady;
+
+//         this.#checkUpSession();
+//     }
+
+//     async #checkUpSession() {
+//         let block = this.storageHandler.getString(ESTRE_UI_APP_SESSION_BLOCK);
+
+//         if (block != null && block != "") {
+//             this.#extractBlock(block);
+
+//             let token = this.#authToken;
+//             //console.log(token);
+
+//             this.#bringOnPrepare(true);
+
+//             if (token != null && token.length > 0) {
+//                 this.#bringOnCheckedAuth(true);
+//                 this.#bringOnReady(true);
+//             } else {
+//                 this.#bringOnCheckedAuth(false);
+//                 this.#bringOnReady(true);
+//             };
+            
+//         } else {
+            
+//             this.#bringOnPrepare(false);
+
+//             this.#onCheckedAuth = null;
+
+//             this.#bringOnReady(true);
+//         }
+
+//     }
+
+//     #bringOnPrepare(isTokenExist) {
+//         this.#onPrepare(isTokenExist);
+//         this.#onPrepare = null;
+//     }
+
+//     #bringOnCheckedAuth(isOnAuth) {
+//         this.#onCheckedAuth(isOnAuth);
+//         this.#onCheckedAuth = null;
+//     }
+
+//     #bringOnReady(isStraight) {
+//         this.#onReady(isStraight);
+//         this.#onReady = null;
+//     }
+
+//     #clearSession() {
+//         this.#user = this.#emptyUser;
+//         this.#session = this.#emptySession;
+//         this.storageHandler.setString(ESTRE_UI_APP_SESSION_BLOCK);
+//     }
+
+//     #extractBlock(block) {
+//         let set = Jcodd.parse(atob(block));
+//         this.#session = set.session;
+//         this.#user = set.user;
+//     }
+
+//     #solidBlock() {
+//         return btoa(Jcodd.coddify({ session: this.#session, user: this.#user }));
+//     }
+
+//     #fetchApiPost(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
+//         return this.#fetchApiWithBody(url, data, callbackSuccess, callbackFailure, "POST", fetchKind);
+//     }
+
+//     #fetchApiPatch(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
+//         return this.#fetchApiWithBody(url, data, callbackSuccess, callbackFailure, "PATCH", fetchKind);
+//     }
+
+//     #fetchApiPut(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
+//         return this.#fetchApiWithBody(url, data, callbackSuccess, callbackFailure, "PUT", fetchKind);
+//     }
+
+//     #fetchApiWithBody(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, request = "POST", fetchKind = "communication") {
+
+//         let headers = new Headers();
+//         headers.append("Content-Type", "application/json");
+//         if (location.href.indexOf("http://") > -1) {
+//             headers.append("Access-Control-Request-Private-Network", "true");
+//         }
+        
+//         let content = data;
+//         let body = JSON.stringify(content);
+//         console.log("request: [" + request + "] " + url + "\n" + body);
+
+//         let fetchWid = EstreAsyncManager.beginWork("[" + request + "]" + url, this.hostId);
+//         fetch (url, {
+//             method: request,
+//             headers: headers,
+//             body: body
+//         }).then((response) => {
+//             if (response.ok) {
+//                 try {
+//                     return response.json();
+//                 } catch (ex) {
+//                     console.log(ex.name + "\n" + ex.message);
+//                     console.log(response);
+//                     EstreAsyncManager.endOfWork(fetchWid);
+//                     //retry
+//                     console.log(fetchKind + " Failure : Server issue");
+//                     callbackFailure({ error: "JSON parse failure", response: response });
+//                     return response;
+//                 }
+//             } else {
+//                 console.log(response);
+//                 EstreAsyncManager.endOfWork(fetchWid);
+//                 //retry
+//                 console.log(fetchKind + " Failure : Server error");
+//                 callbackFailure({ error: "Response is not Ok", response: response });
+//                 return response;
+//             }
+//         }).then((resp) => {
+//             if (resp != null) {
+//                 if (resp instanceof Response) return;
+//                 console.log(resp);
+                
+//                 if (resp?.resultOk != null) {
+
+//                     if (resp.resultOk) {
+//                         callbackSuccess(resp);
+//                     } else {
+//                         switch (resp.resultCode) {
+//                             case 1:
+//                                 //process each resultCode cases
+//                                 break;
+//                         }
+//                         console.log(fetchKind + " Failure : (" + resp.resultCode + ")\n" + resp.resultMessage);
+//                         callbackFailure(resp);
+//                     }
+//                 } else {
+//                     console.log(fetchKind + " Failure : Null resultOk");
+//                     callbackFailure({ error: "no result", response: response });
+//                 }
+//             } else {
+//                 console.log(fetchKind + " Failure : Null response");
+//                 callbackFailure({ error: "How null is response object", response: response });
+//             }
+//             EstreAsyncManager.endOfWork(fetchWid);
+//         }).catch (error => {
+//             console.log(error);
+//             //console.log(ex.name + "\n" + ex.message);
+
+//             // to do implement retry
+//             callbackFailure({ error: "Error on fetch [" + request + "] " + url + "\n" + error, errorOrigin: error });
+//             EstreAsyncManager.endOfWork(fetchWid);
+//         });
+//     }
+
+//     #fetchApiAuthedPost(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
+//         this.#fetchApiAuthedWithBody(url, data, callbackSuccess, callbackFailure, "POST", fetchKind);
+//     }
+
+//     #fetchApiAuthedPatch(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
+//         this.#fetchApiAuthedWithBody(url, data, callbackSuccess, callbackFailure, "PATCH", fetchKind);
+//     }
+
+//     #fetchApiAuthedPut(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, fetchKind = "communication") {
+//         this.#fetchApiAuthedWithBody(url, data, callbackSuccess, callbackFailure, "PUT", fetchKind);
+//     }
+
+//     #fetchApiAuthedWithBody(url, data, callbackSuccess = (data) => {}, callbackFailure = (data) => {}, request = "POST", fetchKind = "communication") {
+//         if (this.#session.loginToken != null && this.#session.loginToken != "") {
+//             if (data == null) data = {};
+//             data.loginToken = this.#session.loginToken;
+//             this.#fetchApiWithBody(url, data, callbackSuccess, callbackFailure, request, fetchKind);
+//         } else callbackFailure({ error: "Login token not exist" });
+//     }
+
+
+//     signIn(id, pw, callbackSuccess = (data) => {}, callbackFailure = (data) => {}) {
+//         let data = { LoginID: id, LoginPW: pw };
+
+//         this.#fetchApiPost(this.apiUrlCollection.login, data, (data) => {
+            
+//             if (data.resultOk) {
+//                 this.#session.loginToken = data.loginToken;
+
+//                 this.#setUser({ name: data.userName });
+
+//                 let block = this.#solidBlock();
+//                 //console.log("session block: " + block);
+
+//                 this.storageHandler.setString(ESTRE_UI_APP_SESSION_BLOCK, block);
+                
+//                 callbackSuccess(data);
+//             } else {
+//                 console.log("Sign in Failure : (" + head.resultCode + ")\n" + head.ResultMessage);
+//                 callbackFailure(data);
+//             }
+//         }, (data) => {
+//             alert("Sign in Failure : " + (data.error != null ? data.error : "(" + data.resultOk + ")\n" + data.ResultMessage));
+//             callbackFailure(data);
+//         }, "Sign in");
+//     }
+
+//     signOut(callbackSuccess = (data) => {}, callbackFailure = (data) => {}) {
+//         this.#clearSession();
+//         callbackSuccess({});
+//         location.reload(); 
+//     }
+
+//     sendNothing(nothing, callbackSuccess = (data) => {}, callbackFailure = (data) => {}) {
+//         this.#fetchApiAuthedPost(this.apiUrlCollection.sendNothing, { nothing }, callbackSuccess, callbackFailure);
+//     }
+// }
+
+
+// // setup instances
+// const appSessionManager = new AppSessionManager(AppApiUrl, ELS, (userName) => {
+//     EstreHandle.activeHandle[uis.appUserHandle]?.forEach(handle => {
+//         handle.releaseInfo();//<= Call release user info
+//     });
+// });
+
+const appActionHandler = new AppActionHandler();//appSessionManager);
 
 const appPageManager = new AppPageManager(appActionHandler);
 
 
-// custom handle callbacks
-AppUserHandle.setOn(() => {
-    const waiter = wait();
-    appSessionManager.signOut((data) => {
-        go(waiter);
-    }, (data) => {
-        go(waiter);
-    });
-}, (handle) => {//<= Callback release user info
-    handle.$bound.find(cls + "user_name").text(appSessionManager.userName);
-});
+// // custom handle callbacks
+// AppUserHandle.setOn(() => {
+//     const waiter = wait();
+//     appSessionManager.signOut((data) => {
+//         go(waiter);
+//     }, (data) => {
+//         go(waiter);
+//     });
+// }, (handle) => {//<= Callback release user info
+//     handle.$bound.find(cls + "user_name").text(appSessionManager.userName);
+// });
 
 
 // Own application and EstreUI initializing
@@ -555,27 +539,33 @@ $(document).ready((e) => {
 
     //<= to do implement my own initializing
 
+    //something do while intializes on splash page
+    appPageManager.init(AppPagesProvider.pages, new AppPagesProvider(appPageManager, appActionHandler));
+    //initialize scheduleDateSet with own data handler
+    // scheduleDataSet.init(myOwnDataHandler);
+    //initialize Estre UI after checked user session
+    estreUi.init();
 
-    //Initialize my own API session manager related initialize EstreUI
-    appSessionManager.init((isTokenExist) => {
-        //something do while intializes on splash page
-        appPageManager.init(AppPagesProvider.pages, new AppPagesProvider(appPageManager, appActionHandler));
-        //initialize scheduleDateSet with own data handler
-        // scheduleDataSet.init(myOwnDataHandler);
-        //initialize Estre UI after checked user session
-        estreUi.init(false);
+    // //Initialize my own API session manager related initialize EstreUI
+    // appSessionManager.init((isTokenExist) => {
+    //     //something do while intializes on splash page
+    //     appPageManager.init(AppPagesProvider.pages, new AppPagesProvider(appPageManager, appActionHandler));
+    //     //initialize scheduleDateSet with own data handler
+    //     // scheduleDataSet.init(myOwnDataHandler);
+    //     //initialize Estre UI after checked user session
+    //     estreUi.init(false);
     
-        //ready to begin page if han not login token
-        if (!isTokenExist) appPageManager.bringPage("login");
-    }, (isOnAuth) => {
-        //bitfurcation user auth when checked only has login token
-        if (!isOnAuth) appPageManager.bringPage("login");
-        else appPageManager.bringPage("home");
-    }, (isStraight) => {
-        //notification finished loading my own app to Estre UI
-        if (isStraight) setTimeout(() => estreUi.checkOnReady(), 0);
-        else estreUi.checkOnReady();
-    });
+    //     //ready to begin page if han not login token
+    //     if (!isTokenExist) appPageManager.bringPage("login");
+    // }, (isOnAuth) => {
+    //     //bitfurcation user auth when checked only has login token
+    //     if (!isOnAuth) appPageManager.bringPage("login");
+    //     else appPageManager.bringPage("home");
+    // }, (isStraight) => {
+    //     //notification finished loading my own app to Estre UI
+    //     if (isStraight) setTimeout(() => estreUi.checkOnReady(), 0);
+    //     else estreUi.checkOnReady();
+    // });
 
 
 })

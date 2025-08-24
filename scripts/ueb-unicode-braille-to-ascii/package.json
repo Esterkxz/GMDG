@@ -1,0 +1,22 @@
+{
+  "name": "ueb-unicode-braille-to-ascii",
+  "version": "1.0.4",
+  "description": "A Unicode Braille to Ascii Converter",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyrkus/UEB-unicode-braille-to-ascii.git"
+  },
+  "author": "Aidan Reidel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cyrkus/UEB-unicode-braille-to-ascii/issues"
+  },
+  "homepage": "https://github.com/cyrkus/UEB-unicode-braille-to-ascii#readme",
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
+}

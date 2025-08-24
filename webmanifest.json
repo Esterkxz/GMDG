@@ -1,7 +1,7 @@
 {
-    "name": "My own EstreUI.js sample application 1",
-    "short_name": "EstreUI app 1",
-    "description": "Basic application model (has application bar, left main menu, bottom root tab)",
+    "name": "⠈⠧⠒⠑⠗⠶⠊⠥⠶⠈⠣⠢",
+    "short_name": "관맹동감",
+    "description": "The Braille ASCII file viewer",
     "icons": [
         {
             "src": "./images/app_icon_192x192.png",
@@ -17,8 +17,8 @@
         }
     ],
     "start_url": ".",
-    "theme_color": "#212426",
-    "background_color": "#F1F1FA",
+    "theme_color": "#415244",
+    "background_color": "#FFFFFF",
     "display": "standalone",
     "orientation": "any",
     "scope": "."

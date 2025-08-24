@@ -1,21 +1,21 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>My own EstreUI.js sample application 1</title>
-    <meta property="og:title" content="My own App 1" />
+    <title>⠈⠧⠒⠑⠗⠶⠊⠥⠶⠈⠣⠢"</title>
+    <meta property="og:title" content="관맹동감" />
     <meta property="og:url" content="https://estreui.mpsolutions.kr" />
     <meta property="og:image" content="./images/app_icon_192x192.png" />
     <meta property="og:image:width" content="192" />
     <meta property="og:image:height" content="192" />
     <meta property="og:image:alt" content="Estre UI logo" />
-    <meta property="og:description" content="My own EstreUI.js sample application 1" />
+    <meta property="og:description" content="The Braille ASCII file viewer" />
     <!-- <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, viewport-fit=cover"> -->
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="EstreUI app 1" />
-    <meta name="description" content="My own EstreUI.js application sample 1" />
-	<meta name="theme-color" content="#F1F1FA">
+    <meta name="apple-mobile-web-app-title" content="관맹동감" />
+    <meta name="description" content="The Braille ASCII file viewer" />
+	<meta name="theme-color" content="#415244">
     <script>
 // Environment constants
 let isStandalone = !!window.matchMedia("(display-mode: standalone)").matches;
@@ -227,6 +227,7 @@ if (isStandalone) {
     <script type="text/javascript" src="./scripts/alienese.js"></script>
     <script type="text/javascript" src="./scripts/estreU0EEOZ.js"></script>
     <script type="text/javascript" src="./scripts/estreUi.js"></script>
+    <script type="text/javascript" src="./scripts/ueb-unicode-braille-to-ascii/index.js" type="module"></script>
     <script type="text/javascript" src="./scripts/main.js"></script>
     <script>
 // in html scripts
@@ -250,26 +251,29 @@ if (isStandalone) {
         <section id="appbar" data-static="1" data-on-top="1">
             <div class="container" data-container-id="home" data-static="1" data-on-top="1">
                 <article class="appbarLeft" data-article-id="left" data-static="1" data-on-top="1">
+                    <button id="mainMenuBtn" class="tp_tiled_btn" title="toggle menu">
+                        <dotlottie-player src="./lotties/menu_and_back_btn.json" background="transparent" speed="1" direction="1" mode="normal" style="max-height: unset; "></dotlottie-player>
+                    </button>
                     <nav class="tool_set" data-on-bound="root">
                     </nav>
                 </article>
                 <article class="appbarCenter" data-article-id="center" data-static="1">
                     <button id="appTitleBtn" class="tp_tiled_btn" title="go to main">
-                        <span style="font-family: 'Cute Font'; font-size: 40px; font-weight: 600; ">My own app 1</span>
+                        <span style="font-size: 40px; font-weight: 600; ">ㄱㅁㄷㄱ · ⠈⠑⠊⠈</span>
                     </button>
                     <nav class="tool_set" data-on-bound="root">
                     </nav>
                 </article>
                 <article class="appbarRight" data-article-id="right" data-static="1">
-                    <button id="mainMenuBtn" class="tp_tiled_btn closer" title="toggle menu">
-                        <dotlottie-player src="./lotties/menu_and_close_btn.json" background="transparent" speed="1" direction="1" mode="normal"></dotlottie-player>
-                    </button>
                     <nav class="tool_set" data-on-bound="root">
                     </nav>
                 </article>
             </div>
             <div class="container" data-container-id="root" data-static="1">
                 <article class="appbarLeft" data-article-id="left" data-static="1" data-on-top="1">
+                    <button id="mainMenuBtn" class="tp_tiled_btn" title="toggle menu">
+                        <dotlottie-player src="./lotties/menu_and_back_btn.json" background="transparent" speed="1" direction="1" mode="normal" style="max-height: unset; "></dotlottie-player>
+                    </button>
                     <button class="back_navigation tp_tiled_btn" title="return to back" style="margin-left: 2px; "></button>
                     <label class="page_title_holder" style="margin-left: 6px; "><span id="pageTitle">main</span></label>
                     <nav class="tool_set" data-on-bound="root">
@@ -282,15 +286,15 @@ if (isStandalone) {
                     </nav>
                 </article>
                 <article class="appbarRight" data-article-id="right" data-static="1">
-                    <button id="mainMenuBtn" class="tp_tiled_btn closer" title="toggle menu">
-                        <dotlottie-player src="./lotties/menu_and_close_btn.json" background="transparent" speed="1" direction="1" mode="normal"></dotlottie-player>
-                    </button>
                     <nav class="tool_set" data-on-bound="root">
                     </nav>
                 </article>
             </div>
             <div class="container" data-container-id="sub" data-static="1">
                 <article class="appbarLeft" data-article-id="left" data-static="1">
+                    <button id="mainMenuBtn" class="tp_tiled_btn" title="toggle menu">
+                        <dotlottie-player src="./lotties/menu_and_back_btn.json" background="transparent" speed="1" direction="1" mode="normal" style="max-height: unset; "></dotlottie-player>
+                    </button>
                     <button class="back_navigation tp_tiled_btn" title="return to back" style="margin-left: 2px; "></button>
                     <label class="page_title_holder" style="margin-left: 6px; "><span id="pageTitle">main</span></label>
                     <nav class="tool_set" data-on-bound="sub">
@@ -301,9 +305,6 @@ if (isStandalone) {
                     </nav>
                 </article>
                 <article class="appbarRight" data-article-id="right" data-static="1">
-                    <button id="mainMenuBtn" class="tp_tiled_btn closer" title="toggle menu">
-                        <dotlottie-player src="./lotties/menu_and_close_btn.json" background="transparent" speed="1" direction="1" mode="normal"></dotlottie-player>
-                    </button>
                     <nav class="tool_set" data-on-bound="sub">
                     </nav>
                 </article>
@@ -313,35 +314,9 @@ if (isStandalone) {
     <nav id="mainMenu" class="right" data-opened="">
         <section id="menuArea" class="vfv_scroll" data-static="1">
             <div class="container" data-container-id="root" data-static="1">
-                <article class="app_user_handle" data-article-id="user_box" data-static="1">
-                    <div class="line_block" style="padding: 0 16px; justify-content: space-between; align-items: center; ">
-                        <label class="user_name">user name</label>
-                        <button class="sign_out">Sign out</button>
-                    </div>
-                </article>
                 <article class="rootMenu" data-article-id="main" data-static="1">
                     <ul class="maxWidth">
-                        <li><button class="tp_tiled_btn" onclick="myOwnPageManager.bringPage('something'); ">Menu item 01</button></li>
-                        <li><button class="tp_tiled_btn" onclick="myOwnPageManager.bringPage('something'); ">Menu item 02</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 03</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 04</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 05</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 06</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 07</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 08</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 09</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 10</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 11</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 12</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 13</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 14</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 15</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 16</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 17</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 18</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 19</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 20</button></li>
-                        <li><button class="tp_tiled_btn" onClick="myOwnPageManager.bringPage('something'); ">Menu item 21</button></li>
+                        <li><button class="tp_tiled_btn" onclick="appActionHandler.openFile(); return false; ">파일 열기</button></li>
                     </ul>
                 </article>
             </div>
@@ -352,104 +327,10 @@ if (isStandalone) {
     <div id="ptr"><div><dotlottie-player src="./lotties/ptr_indic.json" background="transparent" speed="1" direction="1" mode="normal"></dotlottie-player></div></div>
     <main id="staticDoc">
         <!-- Main tabs content - must be match id of button on fixedBottom navs -->
-        <section id="unical" class="root_tab_content" data-static="1">
-            <div class="container vfv_scroll" data-container-id="root" data-static="1" data-title="Unified Calendar">
-                <article class="constraint unified_calendar" data-article-id="main" data-static="1" data-title="Unified Calendar" data-set-prototype="1">
-                </article>
-            </div>
-        </section>
         <section id="home" class="root_tab_content" data-static="1" data-on-top="1">
             <div class="container vfv_scroll" data-container-id="root" data-static="1" data-title="Home">
                 <article id="app" class="constraint" data-article-id="main" data-static="1" data-title="Home">
-                    <div class="line_block" style="text-align: left; "><span>home tab<br />constaint (single fullscreen article)</span></div>
-                </article>
-            </div>
-        </section>
-        <section id="tab1" class="root_tab_content" data-static="1">
-            <div class="container vfv_scroll" data-container-id="root" data-static="1" data-title="Tab1" style="background-color: #DEF; ">
-                <article class="constraint vertical_fit" data-article-id="main" data-static="1" data-title="Tab1">
-                    <div class="line_block" style="text-align: center; "><span>tab 1<br />constaint (single fullscreen article)</span></div>
-                    <button class="" data-open-target="container" data-open-container="article" data-open-id="tab1_next"><span>next article</span></button>
-                </article>
-                <article class="constraint" data-article-id="tab1_next" data-static="" data-title="Tab1-1" onclick="this.pageHandle?.close(); ">
-                </article>
-            </div>
-        </section>
-        <section id="tab2" class="root_tab_content" data-static="1">
-            <div class="container vfv_scroll" data-container-id="root" data-static="1" data-title="Tab2">
-                <article class="constraint vertical_fit" data-article-id="main" data-static="1" style="background-color: #DEF; ">
-                    <div class="line_block" style="text-align: right; "><span>tab 2<br />constaint (single fullscreen article)</span></div>
-                    <button class="" data-open-target="component" data-open-container="container" data-open-id="tab2_next"><span>next container</span></button>
-                </article>
-            </div>
-            <div class="container vfv_scroll" data-container-id="tab2_next" data-static="1" data-title="Tab2-2">
-                <article class="fwvs" data-article-id="main" data-static="1">
-                    <div class="line_block" style="text-align: right; "><span>tab 2<br />constaint (single fullscreen article) container 2</span></div>
-                    <button class="flow_block tp_tiled_btn" data-open-page="&m=activity2#root@main"><span>bring hidden tab (activity 2) main</span></button>
-                    <button class="flow_block tp_tiled_btn" data-open-target="root" data-open-container="component" data-open-id="activity2"><span>move to hidden tab (activity 2)</span></button>
-                </article>
-            </div>
-        </section>
-        <section id="activity1" class="root_tab_content" data-static="1">
-            <div class="container vfv_scroll" data-container-id="root" data-static="1" data-title="Activity1" style="background-color: #EEE; ">
-                <article class="fwvs" data-article-id="item1" data-static="1" data-title="Activity1">
-                    <div class="float_center">
-                        <div class="line_block"><span>activity 1<br />(static)<br />article 1</span></div>
-                    </div>
-                </article>
-                <article class="fwvs" data-article-id="item2" data-static="1" data-title="Activity1-a2">
-                    <div class="float_center">
-                        <div class="line_block"><span>article 2</span></div>
-                    </div>
-                </article>
-                <article class="fwvs" data-article-id="item3" data-static="1" data-title="Activity1-a3">
-                    <div class="float_center">
-                        <div class="line_block"><span>article 3</span></div>
-                    </div>
-                </article>
-            </div>
-        </section>
-        <section id="activity2" class="root_tab_content" data-static="1">
-            <div class="container vfv_scroll" data-container-id="root" data-static="1" data-title="Activity2">
-                <article class="constraint" data-article-id="main" data-static="1">
-                    <div class="float_center">
-                        <div class="line_block"><span>activity 2<br />(static)</span></div>
-                        <div class="line_block">
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item1"><span>article 1</span></button>
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item2"><span>article 2</span></button>
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item3"><span>article 3</span></button>
-                        </div>
-                    </div>
-                </article>
-                <article class="constraint" data-article-id="item1" data-static="1" data-title="Activity1">
-                    <div class="float_center">
-                        <div class="line_block"><span>activity 2<br />(static)<br />article 1</span></div>
-                        <div class="line_block">
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item1" disabled><span>article 1</span></button>
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item2"><span>article 2</span></button>
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item3"><span>article 3</span></button>
-                        </div>
-                    </div>
-                </article>
-                <article class="constraint" data-article-id="item2" data-static="1" data-title="Activity1-a2">
-                    <div class="float_center">
-                        <div class="line_block"><span>article 2<br />(static)<br />article 2</span></div>
-                        <div class="line_block">
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item1"><span>article 1</span></button>
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item2" disabled><span>article 2</span></button>
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item3"><span>article 3</span></button>
-                        </div>
-                    </div>
-                </article>
-                <article class="constraint" data-article-id="item3" data-static="1" data-title="Activity1-a3">
-                    <div class="float_center">
-                        <div class="line_block"><span>article 3<br />(static)<br />article 3</span></div>
-                        <div class="line_block">
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item1"><span>article 1</span></button>
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item2"><span>article 2</span></button>
-                            <button class="" data-open-target="container" data-open-container="article" data-open-id="item3" disabled><span>article 3</span></button>
-                        </div>
-                    </div>
+                    <div class="line_block" style="text-align: left; "><span>메뉴 - 파일 열기를 눌러 파일을 선택하세요</span></div>
                 </article>
             </div>
         </section>
@@ -477,14 +358,10 @@ if (isStandalone) {
         <nav id="customFixedSections">
         </nav>
         <nav id="rootbar">
-            <button class="tp_tiled_btn" data-tab-id="unical" title="Unified Calendar">UniCal</button>
-            <button class="tp_tiled_btn" data-tab-id="home" data-active="1" title="home">HOME</button>
-            <button class="tp_tiled_btn" data-tab-id="tab1" title="tab 1">Tab 1</button>
-            <button class="tp_tiled_btn" data-tab-id="tab2" title="tab 2">Tab 2</button>
-            <button class="tp_tiled_btn" data-tab-id="activity1" data-is-hidden="1" title="activity 1">Activity 1</button>
-            <button class="tp_tiled_btn" data-tab-id="activity2" data-is-hidden="1" title="activity 2">Activity 2</button>
-            <div class="dummy_spacer fit_for_icon"><img src="./vectors/more_vertical_slim_icon.svg"></div>
-            <button class="tp_tiled_btn fit_for_icon" data-tab-id="more" title="more activities"><img src="./vectors/more_vertical_slim_icon.svg"></button>
+            <button class="tp_tiled_btn" data-tab-id="home" data-active="1" data-is-hidden="1" title="파일">File</button>
+            <button class="tp_tiled_btn" data-tab-id="braille" title="Braille unicode">⠨⠎⠢⠨⠣</button>
+            <button class="tp_tiled_btn" data-tab-id="ascii" title="Lower case Braille ASCII">ascii</button>
+            <button class="tp_tiled_btn" data-tab-id="ASCII" title="Upper case Braille ASCII">ASCII</button>
         </nav>
         <nav id="instantSections" description="Don't insert anything. has to be managed automatically.">
         </nav>
