@@ -898,7 +898,7 @@ $(document).ready((e) => {
         //bitfurcation user auth when checked only has login token
         if (!isOnAuth) appPageManager.bringPage("login");
         else appPageManager.bringPage("home");
-    }, (isStraight) => {
+    }, async (isStraight) => {
         if (await appActionManager.onReadyEstreUi()) return;
 
         //notification finished loading my own app to Estre UI
