@@ -1,4 +1,4 @@
-const INSTALLATION_VERSION_NAME = "0.1.0-r20250920c";
+const INSTALLATION_VERSION_NAME = "0.1.0-r20250920m";
 // ^^ Use for check new update "Native application(webview) version - PWA release version"
  
 const INSTALLATION_FILE_LIST = [
@@ -7,14 +7,21 @@ const INSTALLATION_FILE_LIST = [
     "/serviceWorker.js",
     "/webmanifest.json",
 
-    "/images/app_icon_16x16.png",
-    "/images/app_icon_32x32.png",
-    "/images/app_icon_48x48.png",
-    "/images/app_icon_144x144.png",
-    "/images/app_icon_167x167.png",
-    "/images/app_icon_180x180.png",
-    "/images/app_icon_192x192.png",
-    "/images/app_icon_512x512.png",
+    "/images/app_icon_16.png",
+    "/images/app_icon_24.png",
+    "/images/app_icon_32.png",
+    "/images/app_icon_48.png",
+    "/images/app_icon_64.png",
+    "/images/app_icon_96.png",
+    "/images/app_icon_128.png",
+    "/images/app_icon_144.png",
+    "/images/app_icon_152.png",
+    "/images/app_icon_167.png",
+    "/images/app_icon_180.png",
+    "/images/app_icon_192.png",
+    "/images/app_icon_256.png",
+    "/images/app_icon_512.png",
+    "/images/app_icon_1024.png",
 
     "/lotties/menu_and_back_btn.json",
     "/lotties/menu_and_close_btn.json",

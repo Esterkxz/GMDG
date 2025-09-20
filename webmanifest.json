@@ -4,20 +4,20 @@
     "description": "The Braille ASCII file viewer",
     "icons": [
         {
-            "src": "./images/app_icon_192x192.png",
+            "src": "./images/app_icon_192.png",
             "sizes": "192x192",
             "type": "image/png",
             "purpose": "maskable"
         },
         {
-            "src": "./images/app_icon_512x512.png",
+            "src": "./images/app_icon_512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
         }
     ],
     "start_url": ".",
-    "theme_color": "#415244",
+    "theme_color": "#101311",
     "background_color": "#FFFFFF",
     "display_override": ["minimal-ui", "standalone"],
     "display": "window-controls-overlay",

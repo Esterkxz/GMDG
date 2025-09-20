@@ -80,6 +80,10 @@ class AppPagesProvider {
 
         "titleBar": "&h=appbar#home",
 
+
+        "menu_area_root": "&u=menuArea#root",
+
+
         "home": "&m=home",
 
         "braille": "&m=braille",
@@ -133,6 +137,25 @@ class AppPagesProvider {
             this.$titleHolder.text(data);
         }
     };
+
+
+    "menu_area_root" = class extends EstrePageHandler {
+        $versionHolder;
+
+        onBring(handle) {
+            this.$versionHolder = handle.$host.find(".versions");
+        }
+
+        onShow(handle) {
+            this.updateVersion();
+        }
+
+        async updateVersion() {
+            const version = await this.provider.actionManager.swHandler?.getVersion();
+            this.$versionHolder.attr("data-trail", version?.let(it => "v" + it) ?? "(인스턴트 실행 중)");
+        }
+    };
+
 
     "home" = class extends EstrePageHandler {};
 
@@ -258,7 +281,7 @@ class AppActionManager {
     #serviceWorkerHandler = null;
     get swHandler() { return this.#serviceWorkerHandler; }
     #swUpdateChecker = null;
-    #swUpdateBeforeAsk = t; // PWA update method selection (true: method 1, false: method 2)
+    #swUpdateBeforeAsk = f; // PWA update method selection (true: method 1, false: method 2)
 
     #pageManager = null;
     get pageManager() { return this.#pageManager; }
@@ -361,7 +384,7 @@ class AppActionManager {
             // vv Method 1: Install new service worker immediately and prompt user to restart app when activated new service worker
             if (!swHandler.isInitialSetup) {
                 this.controller?.let(it => this.clearCache(it));
-                note("Now installing new version of app...");
+                note("새 버전의 앱이 확인되어 설치중입니다...");
             }
         }
     }
@@ -378,10 +401,10 @@ class AppActionManager {
             // vv Method 2: Wait activate until user accepts to install new service worker and apply immediately when activated new service worker
             const isNewNative = await this.checkPostNewNativeAppVersion(worker);
             if (!isNewNative && !swHandler.isInitialSetup) estreToastConfirm({
-                title: "New version of app is available",
-                message: "A new version of the app is available<br />Would you like to update to the new version now?<br /><span class=\"font_sr12\">* The new version will be automatically applied when the app is restarted after closing<br />** Some functions may not work properly if the new version is not applied</span>",
-                positive: "Update now",
-                negative: "Later",
+                title: "앱의 새 버전이 있어요",
+                message: "앱의 새 버전의 업데이트가 대기중입니다<br />지금 새 버전으로 적용 할까요?<br /><span class=\"font_sr12\">* 새 버전은 앱을 닫은 후 재시작할 때 자동으로 적용됩니다<br />** 새 버전이 적용되지 않으면 일부 기능이 제대로 작동하지 않을 수 있습니다</span>",
+                positive: "지금 적용(앱 재시작)",
+                negative: "나중에",
                 callbackPositive: async _ => {
                     await swHandler.controller?.let(it => this.clearCache(it));
                     swHandler.skipWaiting(worker);
@@ -397,10 +420,10 @@ class AppActionManager {
             // vv Method 1: Install new service worker immediately and prompt user to restart app when activated new service worker
             const isNewNative = await this.checkPostNewNativeAppVersion(worker);
             if (!isNewNative && !swHandler.isInitialSetup) estreToastConfirm({
-                title: "Request to restart app",
-                message: "A new version of the app is ready<br />To apply it, the app needs to be restarted<br />Would you like to restart now?<br /><span class=\"font_sr12\">* The new version will be automatically applied when the app is restarted after closing<br />** Some functions may not work properly if the new version is not applied<br />When new version is installed to be reloaded every app window</span>",
-                positive: "Apply now",
-                negative: "Later",
+                title: "앱 재시작이 필요합니다",
+                message: "앱의 새 버전이 준비되었습니다<br />적용하려면 앱을 재시작해야 합니다<br />지금 재시작할까요?<br /><span class=\"font_sr12\">* 새 버전은 앱을 닫은 후 재시작할 때 자동으로 적용됩니다<br />** 새 버전이 적용되지 않으면 일부 기능이 제대로 작동하지 않을 수 있습니다<br />새 버전이 설치되면 모든 앱 창이 다시 로드됩니다</span>",
+                positive: "지금 적용",
+                negative: "나중에",
                 callbackPositive: _ => {
                     swHandler.clientsClaim(worker);
                     location.reload();
@@ -417,14 +440,14 @@ class AppActionManager {
 
     onWaitingAnotherClientToClose(worker) {
         estreToastAlert({
-            title: "Wait for other window save work",
-            message: "New version of app is loaded<br />If you close this popup, to be reloaded a old version app windows<br />Please save your work and press OK to be applied new version of app in all windows",
-            positive: "OK",
+            title: "다른 창의 작업을 저장하세요",
+            message: "앱의 새 버전이 로드되었습니다<br />이 팝업을 닫으면 이전 버전의 앱 창이 다시 로드됩니다<br />작업을 저장하고 확인을 눌러 모든 창에서 새 버전의 앱을 적용하세요",
+            positive: "확인",
             callbackDissmiss: _ => {
                 this.swHandler.clientsClaim(worker);
                 setTimeout(_ => {
                     if (worker != this.swHandler.controller) location.reload();
-                    else note("The new version of app is applied");
+                    else note("앱의 새 버전이 적용되었습니다");
                 }, 1000);
             },
         });
@@ -452,6 +475,8 @@ class AppActionManager {
             await swHandler.update();
         }, 60 * 60 * 1000);
         // ^^ Customize interval time for check update of service worker
+
+        estreUi.menuSections.menuArea.containers.root?.handler.updateVersion();
     }
 
     async checkPostNewNativeAppVersion(worker = this.swHandler.worker, userConfirmCallback = async isPositive => {}) {
@@ -473,12 +498,12 @@ class AppActionManager {
 
         if (isNewNative) {
             const isAccepted = await postPromise(resolve => {
-                const title = "Notice of important update";
-                const messagePreset = "A new version of the app is available in |storeName|<br />Please proceed with the update<br /><span class=\"font_sr12\">* Some functions may not work properly if the app is not updated to the latest version</span>";
+                const title = "중요 업데이트 알림";
+                const messagePreset = "앱의 새 버전이 |storeName|에 있습니다<br />업데이트를 진행해주세요<br /><span class=\"font_sr12\">* 새 버전으로 업데이트하지 않으면 일부 기능이 제대로 작동하지 않을 수 있습니다</span>";
                 const storeName = isAndroid ? "Play Store" : "App Store";
                 const message = messagePreset.replace("|storeName|", storeName);
-                const positive = "Go to Store";
-                const negative = "Later";
+                const positive = "스토어로 이동";
+                const negative = "나중에";
                 let isPositive = u;
                 estreToastConfirm({
                     title, message, positive, negative,
@@ -511,8 +536,8 @@ class AppActionManager {
     async checkUpdate() {
         const worker = await (this.swHandler ?? serviceWorkerHandler).update();
         if (worker) return worker;
-        else if (worker == n) note("Application is not ready for service");
-        else if (!(await this.checkPostNewNativeAppVersion())) note("The current app is up to date");
+        else if (worker == n) note("앱이 준비 상태가 아닌 것 같아요");
+        else if (!(await this.checkPostNewNativeAppVersion())) note("현재 앱이 최신 버전입니다");
     }
 
     async clearCache() {

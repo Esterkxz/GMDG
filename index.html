@@ -4,7 +4,7 @@
     <title>⠈⠧⠒⠑⠗⠶⠊⠥⠶⠈⠣⠢</title>
     <meta property="og:title" content="관맹동감" />
     <meta property="og:url" content="https://estreui.mpsolutions.kr" />
-    <meta property="og:image" content="./images/app_icon_192x192.png" />
+    <meta property="og:image" content="./images/app_icon_192.png" />
     <meta property="og:image:width" content="192" />
     <meta property="og:image:height" content="192" />
     <meta property="og:image:alt" content="Estre UI logo" />
@@ -381,16 +381,16 @@ const serviceWorkerHandler = {
 serviceWorkerHandler.init();
     </script>
 
-	<link rel="apple-touch-startup-image" href="./images/app_icon_512x512.png">
-	<link rel="apple-touch-icon" href="./images/app_icon_144x144.png">
-	<link rel="apple-touch-icon" sizes="152x152" href="./images/app_icon_152x152.png">
-	<link rel="apple-touch-icon" sizes="180x180" href="./images/app_icon_180x180.png">
-	<link rel="apple-touch-icon" sizes="167x167" href="./images/app_icon_167x167.png">
-	<link rel="shortcut icon" sizes="144x144" href="./images/app_icon_144x144.png" />
+	<link rel="apple-touch-startup-image" href="./images/app_icon_512.png">
+	<link rel="apple-touch-icon" href="./images/app_icon_144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="./images/app_icon_152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="./images/app_icon_180.png">
+	<link rel="apple-touch-icon" sizes="167x167" href="./images/app_icon_167.png">
+	<link rel="shortcut icon" sizes="144x144" href="./images/app_icon_144.png" />
     <link rel="shortcut icon" href="./favicon.ico">
-    <link rel="icon" type="image/png" sizes="48x48" href="./images/app_icon_48x48.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="./images/app_icon_32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./images/app_icon_16x16.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="./images/app_icon_48.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/app_icon_32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/app_icon_16.png">
     <link rel="icon" type="image/svg+xml" href="./vectors/app_icon.svg" />
     <link rel="manifest" href="./webmanifest.json">
 
@@ -436,7 +436,7 @@ if (isStandalone) {
             <div class="container" data-container-id="root">
                 <article class="constraint" data-article-id="main">
                     <div class="float_center" style="--width: min(50vw, 240px);" ondblclick="location.reload(); ">
-                        <img src="./images/app_icon_512x512.png" style="width: var(--width); " />
+                        <img src="./images/app_icon_512.png" style="width: var(--width); " />
                     </div>
                 </article>
             </div>
@@ -518,6 +518,8 @@ if (isStandalone) {
                         <li><button class="tp_tiled_btn" onclick="appActionManager.checkUpateAndForceReload(); return false; ">앱 강제 갱신</button></li>
                         <li><button class="tp_tiled_btn" onclick="setTimeout(_ => { wait(); location.reload(); }, 0); return false; ">앱 다시 시작</button></li>
                         <li><button class="tp_tiled_btn" onclick="appActionManager.checkUpdate(); estreUi.closeMainMenu(); return false; ">앱 업데이트 확인</button></li>
+                        <hr class="inset_on_margin_v_half" />
+                        <li><div class="line_block wided versions inset_on_padding_v_half inset_on_padding_h font_14" data-lead="앱 버전" data-trail=""></div></li>
                     </ul>
                 </article>
             </div>
