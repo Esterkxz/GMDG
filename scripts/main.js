@@ -78,19 +78,15 @@ class AppPagesProvider {
 
         //"own shorter id": "PID",
 
-        "wait": "$i&b=wait",
+        "titleBar": "&h=appbar#home",
 
-        "home": "$s&m=home",
+        "home": "&m=home",
 
-        "tab1": "$s&m=tab1",
-        "tab1Next": "$i&m=tab1#root@tab1_next",
+        "braille": "&m=braille",
 
-        "tab2": "$s&m=tab2",
-        "tab2Next": "$i&m=paybill#root@tab2_next",
-        
-        "activity1": "$s&m=activity1",
+        "ascii": "&m=ascii",
 
-        "activity2": "$i&m=activity2",
+        "ASCII": "&m=ASCII",
 
         "": "",
     }; }
@@ -118,49 +114,99 @@ class AppPagesProvider {
     //declare handler of pages
 
     //"own shorter id" = page handler implementation class from extends EstrePageHandler or empty class(function type constructor)
-    "wait" = class extends EstrePageHandler {};
+    "titleBar" = class extends EstrePageHandler {
+        $titleHolder;
+
+        onBring(handle) {
+            this.$titleHolder = handle.$host.find(".titleHolder");
+        }
+
+        onReload(handle) {
+            this.loadData();
+
+            return t;
+        }
+
+        loadData() {
+            console.log("Load title data: ", this.provider.actionHandler.filename);
+            const data = this.provider.actionHandler.filename ?? "(파일 이름 불명)";
+            this.$titleHolder.text(data);
+        }
+    };
 
     "home" = class extends EstrePageHandler {};
 
-    "tab1" = class extends EstrePageHandler {};
-    "tab1Next" = class extends EstrePageHandler {};
+    "braille" = class extends EstrePageHandler {
+        $contentHolder;
 
-    "attend_success" = class extends EstrePageHandler {};
-    
-    "tab2" = class extends EstrePageHandler {};
-    "tab2Next" = class extends EstrePageHandler {
+        onBring(handle) {
+            this.$contentHolder = handle.$host.find(".content_holder");
+        }
+
         onOpen(handle) {
-        };
-        
-        onBack(handle) {
-            return handle.close();
+            this.loadData();
+        }
+
+        onReload(handle) {
+            this.loadData();
+
+            return t;
+        }
+
+        loadData() {
+            console.log("Load braille data: ", this.provider.actionHandler.filename);
+            const data = this.provider.actionHandler.dataBraille;
+            this.$contentHolder.html(data.replace(/\n/g, "<br />\n").replace(/\f/g, "<br /><br />\n"));
         }
     };
 
-    "activity1" = class extends EstrePageHandler {
-        onOpen(handle) {
-            appActionHandler.somethingDoWhileAnything();
+    "ascii" = class extends EstrePageHandler {
+        $contentHolder;
+
+        onBring(handle) {
+            this.$contentHolder = handle.$host.find(".content_holder");
         }
-        
-        onBack(handle) {
-            return handle.close();
+
+        onReload(handle) {
+            this.loadData();
+
+            return t;
+        }
+
+        onOpen(handle) {
+            this.loadData();
+        }
+
+        loadData() {
+            console.log("Load ascii data: ", this.provider.actionHandler.filename);
+            const data = this.provider.actionHandler.dataAscii;
+            this.$contentHolder.html(data.replace(/\n/g, "<br />\n").replace(/\f/g, "<br /><br />\n"));
         }
     };
 
-    "activity2" = class extends EstrePageHandler {
-        onOpen(handle) {
-            this.myOwnFunction();
-        }
-        
-        onBack(handle) {
-            return handle.close();
+    "ASCII" = class extends EstrePageHandler {
+        $contentHolder;
+
+        onBring(handle) {
+            this.$contentHolder = handle.$host.find(".content_holder");
         }
 
-        myOwnFunction() {
-            //do anything
+        onOpen(handle) {
+            this.loadData();
+        }
+
+        onReload(handle) {
+            this.loadData();
+
+            return t;
+        }
+
+        loadData() {
+            console.log("Load ASCII data: ", this.provider.actionHandler.filename);
+            const data = this.provider.actionHandler.dataASCII;
+            this.$contentHolder.html(data.replace(/\n/g, "<br />\n").replace(/\f/g, "<br /><br />\n"));
         }
     };
-
 }
 
 
@@ -222,6 +268,12 @@ class AppActionManager {
     get actionHandler() { return this.#actionHandler; }
 
     get isApp() { return window.app != n; }
+
+
+    $fileLoader;
+    fileLoader;
+
+    draggableHandler;
 
     constructor(pageManager, sessionManager, actionHandler) {
         this.#pageManager = pageManager;
@@ -298,6 +350,8 @@ class AppActionManager {
         }
 
         if (swHandler.controller != n) this.setServiceWorkerControllerEvents();
+
+        this.beginApp();
     }
 
     async onInstallingNewServiceWorker(worker) {
@@ -502,6 +556,36 @@ class AppActionManager {
         });
         location.reload();
     }
+
+    beginApp() {
+        this.$fileLoader = $("#fileLoader");
+        this.fileLoader = this.$fileLoader[0];
+        this.actionHandler.onBeginApp(this.$fileLoader, this.fileLoader);
+
+        this.$fileLoader.change(e => {
+            console.log("Load file by file input");
+            const files = e.target.files;
+            if (files.length > 0) {
+                this.actionHandler.loadFile(files[0]);
+                this.$fileLoader.val("");
+            }
+        });
+
+
+        this.draggableHandler = new EstreDraggableHandler($(document.documentElement), "both", f);
+
+        $(doc.b).on("drop", e => {
+            e.preventDefault();
+
+            console.log("Load file by drag & drop");
+            const files = e.originalEvent.dataTransfer?.files;
+            if (files?.length > 0) {
+                this.actionHandler.loadFile(files[0]);
+            }
+
+            return f;
+        });
+    }
 }
 
 
@@ -518,6 +602,20 @@ class AppActionHandler {
     #pageManager = null;
     get pageManager() { return this.#pageManager; }
 
+
+    $fileLoader;
+    fileLoader;
+
+    fileReader;
+
+    file;
+    filename;
+    dataOrigin;
+    dataBraille;
+    dataAscii;
+    dataASCII;
+    
+
     constructor (sessionManager) {
         this.#sessionManager = sessionManager;
     }
@@ -530,8 +628,47 @@ class AppActionHandler {
     }
 
 
+    onBeginApp($fileLoader, fileLoader) {
+        this.$fileLoader = $fileLoader;
+        this.fileLoader = fileLoader;
+
+        this.fileReader = new FileReader();
+        this.fileReader.onload = e => this.onLoadFile(e);
+    }
+
     openFile() {
+        this.fileLoader.click();
+    }
+
+    loadFile(file) {
+        this.file = file;
+        this.filename = file.name;
+        this.dataOrigin = null;
+        this.dataBraille = null;
+        this.dataAscii = null;
+        this.dataASCII = null;
+
+        console.log("Begin load file: ", this.filename);
+
+        this.fileReader.readAsText(this.file);
+    }
+
+    onLoadFile(e) {
+        const content = e.target.result;
+        this.dataOrigin = content;
+
+        this.dataBraille = caseFreeASCIIBrailleToUnicode(this.dataOrigin);
+        this.dataAscii = unicodeBrailleToASCIILowerCase(this.dataBraille);
+        this.dataASCII = unicodeBrailleToASCII(this.dataBraille);
+
+        console.log("Loaded file: ", this.filename);
         
+        estreUi.appbar.containers.home.reload();
+        estreUi.mainSections.braille.reload();
+        estreUi.mainSections.ascii.reload();
+        estreUi.mainSections.ASCII.reload();
+
+        this.pageManager.bringPage("braille");
     }
 }
 

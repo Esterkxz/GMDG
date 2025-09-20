@@ -12859,8 +12859,10 @@ class EstreDraggableHandler {
                 // Use improved drag move logic
                 const afterElement = handler.getDragAfterElement(this, e.clientY);
                 if (handler.#isEnabledTouch) handler.performDragMove(this, afterElement);
-                else if (afterElement === null) this.appendChild(draggingItem);
-                else this.insertBefore(draggingItem, afterElement);
+                else if (draggingItem instanceof Node) {
+                    if (afterElement === null) this.appendChild(draggingItem);
+                    else this.insertBefore(draggingItem, afterElement);
+                }
 
                 return false;
             },

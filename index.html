@@ -423,13 +423,14 @@ if (isStandalone) {
     <script type="text/javascript" src="./scripts/alienese.js"></script>
     <script type="text/javascript" src="./scripts/estreU0EEOZ.js"></script>
     <script type="text/javascript" src="./scripts/estreUi.js"></script>
-    <script src="./scripts/ueb-unicode-braille-to-ascii/index.js" type="module"></script>
+    <script type="text/javascript" src="./scripts/ueb-unicode-braille-to-ascii/index.js"></script>
     <script type="text/javascript" src="./scripts/main.js"></script>
     <script>
 // in html scripts
     </script>
 </head>
-<body class="vfv_scroll">
+<body class="vfv_scroll" droppable="true" style="padding: 0; ">
+    <input type="file" id="fileLoader" accept=".txt,.brf,.brl,.bbf" style="display: none; " />
     <main id="splashRoot" style="z-index: 500; ">
         <section id="splash" data-on-top="0">
             <div class="container" data-container-id="root">
@@ -453,10 +454,10 @@ if (isStandalone) {
                     <nav class="tool_set" data-on-bound="root">
                     </nav>
                 </article>
-                <article class="appbarCenter" data-article-id="center" data-static="1">
-                    <button id="appTitleBtn" class="tp_tiled_btn" title="go to main">
+                <article class="appbarCenter float_center" data-article-id="center" data-static="1">
+                    <div class="titleHolder ellipsis_h" style="max-width: min(80vw, -webkit-fill-available);  text-align: center; ">
                         <span style="font-size: 40px; font-weight: 600; ">ㄱㅁㄷㄱ · ⠈⠑⠊⠈</span>
-                    </button>
+                    </div>
                     <nav class="tool_set" data-on-bound="root">
                     </nav>
                 </article>
@@ -510,9 +511,13 @@ if (isStandalone) {
     <nav id="mainMenu" class="left" data-opened="">
         <section id="menuArea" class="vfv_scroll" data-static="1">
             <div class="container" data-container-id="root" data-static="1">
-                <article class="rootMenu" data-article-id="main" data-static="1">
+                <article class="rootMenu inset_on_margin_t" data-article-id="main" data-static="1">
                     <ul class="maxWidth">
-                        <li><button class="tp_tiled_btn" onclick="appActionHandler.openFile(); return false; ">파일 열기</button></li>
+                        <li><button class="tp_tiled_btn" onclick="appActionHandler.openFile(); estreUi.closeMainMenu(); return false; ">파일 열기</button></li>
+                        <hr class="bold spaced" />
+                        <li><button class="tp_tiled_btn" onclick="appActionManager.checkUpateAndForceReload(); return false; ">앱 강제 갱신</button></li>
+                        <li><button class="tp_tiled_btn" onclick="setTimeout(_ => { wait(); location.reload(); }, 0); return false; ">앱 다시 시작</button></li>
+                        <li><button class="tp_tiled_btn" onclick="appActionManager.checkUpdate(); estreUi.closeMainMenu(); return false; ">앱 업데이트 확인</button></li>
                     </ul>
                 </article>
             </div>
@@ -524,9 +529,36 @@ if (isStandalone) {
     <main id="staticDoc">
         <!-- Main tabs content - must be match id of button on fixedBottom navs -->
         <section id="home" class="root_tab_content" data-static="1" data-on-top="1">
-            <div class="container vfv_scroll" data-container-id="root" data-static="1" data-title="Home">
-                <article id="app" class="constraint" data-article-id="main" data-static="1" data-title="Home">
+            <div class="container vfv_scroll" data-container-id="root" data-static="1" data-title="시작">
+                <article class="constraint" data-article-id="main" data-static="1">
                     <div class="line_block" style="text-align: left; "><span>메뉴 - 파일 열기를 눌러 파일을 선택하세요</span></div>
+                </article>
+            </div>
+        </section>
+        <section id="braille" class="root_tab_content home" data-static="1" data-on-top="">
+            <div class="container vfv_scroll" data-container-id="root" data-static="1" data-title="점자 보기">
+                <article class="fwvs" data-article-id="main" data-static="1">
+                    <div class="content_holder">
+                        <div class="line_block" style="text-align: left; "><span>메뉴 - 파일 열기를 눌러 파일을 선택하세요</span></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+        <section id="ascii" class="root_tab_content home" data-static="1" data-on-top="">
+            <div class="container vfv_scroll" data-container-id="root" data-static="1" data-title="텍스트 표기 보기 (소문자)">
+                <article class="fwvs" data-article-id="main" data-static="1">
+                    <div class="content_holder">
+                        <div class="line_block" style="text-align: left; "><span>메뉴 - 파일 열기를 눌러 파일을 선택하세요</span></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+        <section id="ASCII" class="root_tab_content home" data-static="1" data-on-top="">
+            <div class="container vfv_scroll" data-container-id="root" data-static="1" data-title="텍스트 표기 보기 (대문자)">
+                <article class="fwvs" data-article-id="main" data-static="1">
+                    <div class="content_holder">
+                        <div class="line_block" style="text-align: left; "><span>메뉴 - 파일 열기를 눌러 파일을 선택하세요</span></div>
+                    </div>
                 </article>
             </div>
         </section>

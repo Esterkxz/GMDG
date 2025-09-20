@@ -1,5 +1,6 @@
 const unicodeBrailleToASCIITable = {
     "⠀": " ",
+    "⠀": "`",
     "⠁": "A",
     "⠂": "1",
     "⠃": "B",
@@ -67,6 +68,7 @@ const unicodeBrailleToASCIITable = {
 
 const unicodeBrailleToASCIILowerCaseTable = {
     "⠀": " ",
+    "⠀": "`",
     "⠁": "a",
     "⠂": "1",
     "⠃": "b",

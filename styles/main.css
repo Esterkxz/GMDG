@@ -63,7 +63,7 @@ article .bg_pointed { --bg-basic: rgb(var(--cpl) / 15%); --bg-hover: rgb(var(--c
 
 
 /* Data related styles */
-
+article .content_holder { width: max-content; margin: auto; padding-inline: var(--basic-ui-inset-h); font-size: min(1.25rem, calc((var(--available-max-width) - (var(--basic-ui-inset-h) * 2)) / 23)); user-select: text; }
 
 
 
