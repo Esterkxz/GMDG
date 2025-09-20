@@ -159,7 +159,7 @@ const caseFreeASCIIBrailleToUnicode = toTranslate => toTranslate.split('')
     .map(c => unicodeBrailleToASCIITable[c] ? unicodeBrailleToASCIITable[c] : c)
     .map(c => lowerCaseAsciiBrailleToUnicodeTable[c] ? lowerCaseAsciiBrailleToUnicodeTable[c] : c).join('')
 
-module.exports = {
+if (typeof module !== 'undefined') module.exports = {
     "unicodeToASCII": unicodeBrailleToASCII,
     "unicodeToASCIITable": unicodeBrailleToASCIITable,
     "asciiToUnicode": asciiBrailleToUnicode,

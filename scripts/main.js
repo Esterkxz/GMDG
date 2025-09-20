@@ -867,7 +867,7 @@ $(document).ready((e) => {
     //<= to do implement my own initializing
 
     //something do while intializes on splash page
-    appPageManager.init(AppPagesProvider.pages, new AppPagesProvider(appPageManager, appActionManager, appActionHandler.init(appPageManager, appActionManager), appSessionManager));
+    appPageManager.init(AppPagesProvider.pages, new AppPagesProvider(appPageManager, appActionManager, appActionHandler.init(appPageManager, appActionManager)));//, appSessionManager));
     //initialize scheduleDateSet with own data handler
     // scheduleDataSet.init(myOwnDataHandler);
     //initialize Estre UI after checked user session
@@ -890,8 +890,7 @@ $(document).ready((e) => {
             if (await appActionManager.onReadyEstreUi()) return;
 
             //notification finished loading my own app to Estre UI
-            if (isStraight) setTimeout(() => estreUi.checkOnReady(), 0);
-            else estreUi.checkOnReady();
+            setTimeout(() => estreUi.checkOnReady(), 0);
         });
     
     //     //ready to begin page if han not login token

@@ -1,4 +1,4 @@
-const INSTALLATION_VERSION_NAME = "0.8.0-r20250901";
+const INSTALLATION_VERSION_NAME = "0.1.0-r20250920";
 // ^^ Use for check new update "Native application(webview) version - PWA release version"
  
 const INSTALLATION_FILE_LIST = [
@@ -32,6 +32,7 @@ const INSTALLATION_FILE_LIST = [
     "/scripts/alienese.js",
     "/scripts/estreU0EEOZ.js",
     "/scripts/estreUi.js",
+    "/scripts/ueb-unicode-braille-to-ascii/index.js",
     "/scripts/main.js",
 
     "/vectors/app_icon.svg",
