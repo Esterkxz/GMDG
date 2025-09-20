@@ -432,7 +432,11 @@ class AppActionManager {
         } else {
             // vv Method 2: Wait activate until user accepts to install new service worker and apply immediately when activated new service worker
             if (!swHandler.isInitialSetup) {
-                swHandler.clientsClaim(worker);
+                try {
+                    swHandler.clientsClaim(worker);
+                } catch (e) {
+                    console.error(e);
+                }
                 location.reload();
             }
         }
@@ -683,8 +687,8 @@ class AppActionHandler {
         this.dataOrigin = content;
 
         this.dataBraille = caseFreeASCIIBrailleToUnicode(this.dataOrigin);
-        this.dataAscii = unicodeBrailleToASCIILowerCase(this.dataBraille);
-        this.dataASCII = unicodeBrailleToASCII(this.dataBraille);
+        this.dataAscii = this.dataOrigin.toLowerCase();
+        this.dataASCII = this.dataOrigin.toUpperCase();
 
         console.log("Loaded file: ", this.filename);
         

@@ -1,0 +1,24 @@
+# PWA 캐싱 방지를 위한 헤더 설정
+<IfModule mod_headers.c>
+    # 모든 파일에 대해 캐시 방지 헤더 설정
+    Header always set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header always set Pragma "no-cache"
+    Header always set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
+</IfModule>
+
+# 특정 파일 타입별로 더 강력한 캐시 방지 설정
+<FilesMatch "\.(html|htm|js|mjs|css|json|svg|png|jpg|jpeg|gif|ico|woff|woff2|ttf|otf)$">
+    <IfModule mod_headers.c>
+        Header always set Cache-Control "no-cache, no-store, must-revalidate, max-age=0, s-maxage=0"
+        Header always set Pragma "no-cache"
+        Header always set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
+    </IfModule>
+</FilesMatch>
+
+# Service Worker 파일에 대한 특별 설정
+<Files "serviceWorker.js">
+    <IfModule mod_headers.c>
+        Header always set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+        Header always set Service-Worker-Allowed "/"
+    </IfModule>
+</Files>

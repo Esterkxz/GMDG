@@ -1,6 +1,5 @@
 const unicodeBrailleToASCIITable = {
     "⠀": " ",
-    "⠀": "`",
     "⠁": "A",
     "⠂": "1",
     "⠃": "B",
@@ -43,7 +42,6 @@ const unicodeBrailleToASCIITable = {
     "⠨": ".",
     "⠩": "%",
     "⠪": "[",
-    "⠪": "{",
     "⠫": "$",
     "⠬": "+",
     "⠭": "X",
@@ -61,7 +59,6 @@ const unicodeBrailleToASCIITable = {
     "⠹": "?",
     "⠺": "W",
     "⠻": "]",
-    "⠻": "}",
     "⠼": "#",
     "⠽": "Y",
     "⠾": ")",
@@ -70,7 +67,6 @@ const unicodeBrailleToASCIITable = {
 
 const unicodeBrailleToASCIILowerCaseTable = {
     "⠀": " ",
-    "⠀": "`",
     "⠁": "a",
     "⠂": "1",
     "⠃": "b",
@@ -113,7 +109,6 @@ const unicodeBrailleToASCIILowerCaseTable = {
     "⠨": ".",
     "⠩": "%",
     "⠪": "[",
-    "⠪": "{",
     "⠫": "$",
     "⠬": "+",
     "⠭": "x",
@@ -131,11 +126,16 @@ const unicodeBrailleToASCIILowerCaseTable = {
     "⠹": "?",
     "⠺": "w",
     "⠻": "]",
-    "⠻": "}",
     "⠼": "#",
     "⠽": "y",
     "⠾": ")",
     "⠿": "="
+}
+
+const extraBrailleToASCIITable = {
+    "⠀": "`",
+    "⠪": "{",
+    "⠻": "}",
 }
 
 const asciiBrailleToUnicodeTableConverter = () => Object.keys(unicodeBrailleToASCIITable).reduce((accumulator, current) => {
@@ -148,22 +148,29 @@ const lowerCaseAsciiBrailleToUnicodeTableConverter = () => Object.keys(unicodeBr
     return accumulator
 }, {})
 
+const extraBrailleToUnicodeTableConverter = () => Object.keys(extraBrailleToASCIITable).reduce((accumulator, current) => {
+    accumulator[extraBrailleToASCIITable[current]] = current
+    return accumulator
+}, {})
+
 const asciiBrailleToUnicodeTable = asciiBrailleToUnicodeTableConverter()
 const lowerCaseAsciiBrailleToUnicodeTable = lowerCaseAsciiBrailleToUnicodeTableConverter()
+const extraBrailleToUnicodeTable = extraBrailleToUnicodeTableConverter()
 
 const asciiBrailleToUnicode = toTranslate => toTranslate.split('')
-    .map(c => asciiBrailleToUnicodeTable[c] ? asciiBrailleToUnicodeTable[c] : c).join('')
+    .map(c => asciiBrailleToUnicodeTable[c] ? asciiBrailleToUnicodeTable[c] : extraBrailleToUnicodeTable[c] ? extraBrailleToUnicodeTable[c] : c).join('')
 const lowerCaseAsciiBrailleToUnicode = toTranslate => toTranslate.split('')
-    .map(c => lowerCaseAsciiBrailleToUnicodeTable[c] ? lowerCaseAsciiBrailleToUnicodeTable[c] : c).join('')
+    .map(c => lowerCaseAsciiBrailleToUnicodeTable[c] ? lowerCaseAsciiBrailleToUnicodeTable[c] : extraBrailleToUnicodeTable[c] ? extraBrailleToUnicodeTable[c] : c).join('')
 
 const unicodeBrailleToASCII = toTranslate => toTranslate.split('')
-    .map(c => unicodeBrailleToASCIITable[c] ? unicodeBrailleToASCIITable[c] : c).join('')
+    .map(c => unicodeBrailleToASCIITable[c] ? unicodeBrailleToASCIITable[c] : extraBrailleToASCIITable[c] ? extraBrailleToASCIITable[c] : c).join('')
 const unicodeBrailleToASCIILowerCase = toTranslate => toTranslate.split('')
-    .map(c => unicodeBrailleToASCIILowerCaseTable[c] ? unicodeBrailleToASCIILowerCaseTable[c] : c).join('')
+    .map(c => unicodeBrailleToASCIILowerCaseTable[c] ? unicodeBrailleToASCIILowerCaseTable[c] : extraBrailleToASCIITable[c] ? extraBrailleToASCIITable[c] : c).join('')
 
 const caseFreeASCIIBrailleToUnicode = toTranslate => toTranslate.split('')
     .map(c => unicodeBrailleToASCIITable[c] ? unicodeBrailleToASCIITable[c] : c)
-    .map(c => lowerCaseAsciiBrailleToUnicodeTable[c] ? lowerCaseAsciiBrailleToUnicodeTable[c] : c).join('')
+    .map(c => lowerCaseAsciiBrailleToUnicodeTable[c] ? lowerCaseAsciiBrailleToUnicodeTable[c] : c)
+    .map(c => extraBrailleToUnicodeTable[c] ? extraBrailleToUnicodeTable[c] : c).join('')
 
 if (typeof module !== 'undefined') module.exports = {
     "unicodeToASCII": unicodeBrailleToASCII,
