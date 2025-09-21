@@ -1222,6 +1222,11 @@ class EJS {
         return this._storage.setItem(this._getFullKey(key), valueString == null ? "" : valueString);
     }
 
+    remove(key) {
+        if (key == null | key == "") return undefined;
+        return this._storage.removeItem(this._getFullKey(key));
+    }
+
 }
 
 /**
@@ -1254,6 +1259,11 @@ class EAJS extends EJS {
             console.log(ex);
         }            
         return await this._storage.setItem(this._getFullKey(key), valueString == null ? "" : valueString);
+    }
+
+    async remove(key) {
+        if (key == null | key == "") return undefined;
+        return await this._storage.removeItem(this._getFullKey(key));
     }
 
 }

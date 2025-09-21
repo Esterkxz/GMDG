@@ -731,7 +731,10 @@ class AppActionHandler {
         const exist = recent.find(it => it.filename == this.filename);
         if (exist) recent.remove(exist);
         recent.unshift({ filename: this.filename, size: this.file.size, timestamp: dt.t });
-        while (recent.length > 20) recent.pop();
+        while (recent.length > 20) try {
+            const target = recent.pop();
+            ECLS.remove("file=" + target.filename);
+        } catch (e) { console.error(e); }
         ECLS.set("recentFiles", recent);
         ECLS.set("file=" + this.filename, this.dataOrigin);
 

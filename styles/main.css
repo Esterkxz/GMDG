@@ -59,7 +59,7 @@ article button { padding: 1em; border-style: none; border-radius: 1em; }
 /* override EstreUI */
 
 nav#mainMenu > section#menuArea > div.container[data-container-id="root"] > article[data-article-id="main"] { display: flex; flex-flow: column nowrap; padding-top: var(--top-pad); justify-content: space-between; }
-nav#mainMenu > section#menuArea > div.container[data-container-id="root"] > article[data-article-id="main"] > ul.recent { display: flex; flex-flow: column nowrap; flex-grow: 1; justify-content: flex-start; align-items: stretch; }
+nav#mainMenu > section#menuArea > div.container[data-container-id="root"] > article[data-article-id="main"] > ul.recent { display: flex; flex-flow: column nowrap; flex-grow: 1; flex-shrink: 1; justify-content: flex-start; align-items: stretch; overflow-y: auto; scrollbar-width: thin; }
 nav#mainMenu > section#menuArea > div.container[data-container-id="root"] > article[data-article-id="main"] > ul.recent::before { padding-inline: var(--basic-ui-inset-h); color: var(--color-text-ligntness); }
 
 /* footer#fixedBottom { transition-timing-function: ease; transition-duration: 0.3s; }
