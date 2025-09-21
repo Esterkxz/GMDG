@@ -728,8 +728,8 @@ class AppActionHandler {
         this.dataASCII = this.dataOrigin.toUpperCase();
 
         const recent = ECLS.get("recentFiles", []);
-        const exist = recent.find(it => it.filename == this.filename);
-        if (exist) recent.remove(exist);
+        const index = recent.findIndex(it => it.filename == this.filename);
+        if (index > -1) recent.splice(index, 1);
         recent.unshift({ filename: this.filename, size: this.file.size, timestamp: dt.t });
         while (recent.length > 20) try {
             const target = recent.pop();
@@ -776,8 +776,8 @@ class AppActionHandler {
             note("해당 파일 데이터가 유실되었습니다<br />파일 열기로 직접 열어주세요");
 
             const recent = ECLS.get("recentFiles", []);
-            const exist = recent.find(it => it.filename == filename);
-            if (exist) recent.remove(exist);
+            const index = recent.findIndex(it => it.filename == filename);
+            if (index > -1) recent.splice(index, 1);
             ECLS.set("recentFiles", recent);
             estreUi.menuSections.menuArea.containers.root?.handler.releaseRecent();
         }
