@@ -69,8 +69,8 @@ article .bg_pointed { --bg-basic: rgb(var(--cpl) / 15%); --bg-hover: rgb(var(--c
 
 
 /* Data related styles */
-article .content_holder { display: flex; flex-flow: column nowrap; width: max-content; margin: auto; align-items: stretch; font-family: "IBM Plex Mono"; font-size: min(1.25rem, calc((var(--available-max-width) - (var(--basic-ui-inset-h) * 2)) / 23)); line-height: 1.6666em; user-select: text; }
-article .content_holder > p { margin: var(--basic-ui-inset-v-half) 0 var(--basic-ui-inset-v); padding: var(--basic-ui-inset-v) var(--basic-ui-inset-h); background-color: var(--color-boundary-bright); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+article .content_holder { --page-pad-v: 32px; --page-pad-h: 24px; --page-pad: var(--page-pad-v) var(--page-pad-h); display: flex; flex-flow: column nowrap; width: max-content; margin: auto; padding-bottom: var(--bottom-pad); align-items: stretch; font-family: "IBM Plex Mono"; font-size: min(1.25rem, calc((var(--available-max-width) - (var(--page-pad-h) * 2)) / 26)); line-height: 1.6666em; user-select: text; }
+article .content_holder > p { margin: var(--basic-ui-inset-v-half) 0 var(--basic-ui-inset-v); padding: var(--page-pad); background-color: var(--color-boundary-bright); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
 
 
 
