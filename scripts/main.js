@@ -704,8 +704,8 @@ class AppActionHandler {
     }
 
     loadContentPaged(source, isAscii = f) {
-        source = source.replace(/\n/g, "⏎<br />\n");
         if (isAscii) source = source.replace(/ /g, " ");
+        source = source.replace(/\n/g, "⏎<br />\n");
         const pages = source.split("\f");
         const fragment = document.createDocumentFragment();
         const lastIndex = pages.length - 1;
