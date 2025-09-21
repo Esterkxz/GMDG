@@ -1,4 +1,4 @@
-const INSTALLATION_VERSION_NAME = "0.1.1-r20250921ai";
+const INSTALLATION_VERSION_NAME = "0.1.1-r20250921aj";
 // ^^ Use for check new update "Native application(webview) version - PWA release version"
  
 const INSTALLATION_FILE_LIST = [
@@ -34,6 +34,11 @@ const INSTALLATION_FILE_LIST = [
 
     "https://code.jquery.com/jquery-3.7.1.js",
     "https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs",
+    "https://unpkg.com/@dotlottie/player-component@2.7.12/dist/chunk-ODPU3M3Z.mjs",
+    "https://unpkg.com/@dotlottie/player-component@2.7.12/dist/chunk-TRZ6EGBZ.mjs",
+    "https://unpkg.com/@dotlottie/player-component@2.7.12/dist/chunk-HDDX7F4A.mjs",
+    "https://unpkg.com/@dotlottie/player-component@2.7.12/dist/chunk-ZWH2ESXT.mjs",
+    "https://unpkg.com/@dotlottie/player-component@2.7.12/dist/lottie_svg-MJGYILXD-NRTSROOT.mjs",
     "/scripts/jcodd.js",
     "/scripts/modernism.js",
     "/scripts/alienese.js",
@@ -44,6 +49,20 @@ const INSTALLATION_FILE_LIST = [
 
     "/vectors/app_icon.svg",
     "/vectors/more_vertical_slim_icon.svg",
+
+    "https://fonts.googleapis.com/css2?family=Cute+Font&family=Noto+Sans+KR:wght@100..900&display=swap",
+    "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap",
+
+    "https://fonts.gstatic.com/s/notosanskr/v38/PbykFmXiEBPT4ITbgNA5CgmG0X7t.woff2",
+    "https://fonts.gstatic.com/s/notosanskr/v38/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.119.woff2",
+    "https://fonts.gstatic.com/s/notosanskr/v38/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.118.woff2",
+    "https://fonts.gstatic.com/s/notosanskr/v38/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.117.woff2",
+    "https://fonts.gstatic.com/s/notosanskr/v38/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.116.woff2",
+    "https://fonts.gstatic.com/s/notosanskr/v38/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.114.woff2",
+    "https://fonts.gstatic.com/s/notosanskr/v38/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.113.woff2",
+    "https://fonts.gstatic.com/s/notosanskr/v38/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.110.woff2",
+    "https://fonts.gstatic.com/s/notosanskr/v38/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.109.woff2",
+
 
 ];
 
