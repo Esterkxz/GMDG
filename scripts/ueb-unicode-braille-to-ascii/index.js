@@ -134,6 +134,7 @@ const unicodeBrailleToASCIILowerCaseTable = {
 
 const extraBrailleToASCIITable = {
     "⠀": "`",
+    "⠘": "~",
     "⠪": "{",
     "⠻": "}",
 }
