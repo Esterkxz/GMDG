@@ -2,6 +2,7 @@
     "name": "⠈⠧⠒⠑⠗⠶⠊⠥⠶⠈⠣⠢",
     "short_name": "관맹동감",
     "description": "The Braille ASCII file viewer",
+    "categories": ["accessibility", "utilities"],
     "icons": [
         {
             "src": "./images/app_icon_192.png",
@@ -18,7 +19,7 @@
     ],
     "start_url": ".",
     "theme_color": "#101311",
-    "background_color": "#FFFFFF",
+    "background_color": "#EFEFEF",
     "display_override": ["minimal-ui", "standalone"],
     "display": "window-controls-overlay",
     "orientation": "any",

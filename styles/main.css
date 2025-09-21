@@ -2,6 +2,9 @@
 /* Noto Sans KR, Cute Font */
 @import url('https://fonts.googleapis.com/css2?family=Cute+Font&family=Noto+Sans+KR:wght@100..900&display=swap');
 
+/* IBM Plex Mono */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
 
 /* animations */
 
@@ -11,13 +14,14 @@
 /* Current application customs */
 html {
 
-    --color-my-own-dark: #3c596d;   --cmod: 60 89 109;
-    --color-my-own: #51a7e0;        --cmo: 81 167 224;
-    --color-my-own-light: #81c2ec;  --cmol: 129 194 236;
+    --color-gmdg-darker: #415244;   --cgmdgdr: 65 82 68;
+    --color-gmdg-dark: #357C43;     --cgmdgd: 55 124 67;
+    --color-gmdg: #209237;          --cgmdg: 32 146 55;
+    --color-gmdg-light: #0DA72C;    --cgmdgl: 13 167 44;
 
-    --color-point-dark: var(--color-my-own-dark);      --cpd: var(--cmod);
-    --color-point: var(--color-my-own);                --cp: var(--cmo);
-    --color-point-light: var(--color-my-own-light);    --cpl: var(--cmol);
+    --color-point-dark: var(--color-gmdg-dark);      --cpd: var(--cgmdgd);
+    --color-point: var(--color-gmdg);                --cp: var(--cgmdg);
+    --color-point-light: var(--color-gmdg-light);    --cpl: var(--cgmdgl);
 
 
     /* --top-pad: calc(env(safe-area-inset-top) + 0px);
@@ -26,7 +30,7 @@ html {
 }
 
 body {
-    --common-bg-color: #FFFFFF;
+    --common-bg-color: #EFEFEF;
 
     font-family: 'Noto Sans KR';
 
@@ -54,6 +58,8 @@ article button { padding: 1em; border-style: none; border-radius: 1em; }
 /* footer#fixedBottom { transition-timing-function: ease; transition-duration: 0.3s; }
 footer#fixedBottom:not(:hover) { bottom: -44px; } */
 
+footer#fixedBottom { background-color: transparent; }
+
 
 /* custom element styles */
 article .line_block { border-bottom: none; border-radius: 0; }
@@ -63,7 +69,9 @@ article .bg_pointed { --bg-basic: rgb(var(--cpl) / 15%); --bg-hover: rgb(var(--c
 
 
 /* Data related styles */
-article .content_holder { width: max-content; margin: auto; padding-inline: var(--basic-ui-inset-h); font-size: min(1.25rem, calc((var(--available-max-width) - (var(--basic-ui-inset-h) * 2)) / 23)); user-select: text; }
+article .content_holder { display: flex; flex-flow: column nowrap; width: max-content; margin: auto; align-items: stretch; font-family: "IBM Plex Mono"; font-size: min(1.25rem, calc((var(--available-max-width) - (var(--basic-ui-inset-h) * 2)) / 23)); line-height: 1.6666em; user-select: text; }
+article .content_holder > p { margin: var(--basic-ui-inset-v-half) 0 var(--basic-ui-inset-v); padding: var(--basic-ui-inset-v) var(--basic-ui-inset-h); background-color: var(--color-boundary-bright); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+
 
 
 

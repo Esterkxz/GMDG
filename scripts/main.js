@@ -179,7 +179,8 @@ class AppPagesProvider {
         loadData() {
             console.log("Load braille data: ", this.provider.actionHandler.filename);
             const data = this.provider.actionHandler.dataBraille;
-            this.$contentHolder.html(data.replace(/\n/g, "<br />\n").replace(/\f/g, "<br /><br />\n"));
+            const fragment = this.provider.actionHandler.loadContentPaged(data);
+            this.$contentHolder.empty().append(fragment);
         }
     };
 
@@ -203,7 +204,8 @@ class AppPagesProvider {
         loadData() {
             console.log("Load ascii data: ", this.provider.actionHandler.filename);
             const data = this.provider.actionHandler.dataAscii;
-            this.$contentHolder.html(data.replace(/\n/g, "<br />\n").replace(/\f/g, "<br /><br />\n"));
+            const fragment = this.provider.actionHandler.loadContentPaged(data, t);
+            this.$contentHolder.empty().append(fragment);
         }
     };
 
@@ -227,7 +229,8 @@ class AppPagesProvider {
         loadData() {
             console.log("Load ASCII data: ", this.provider.actionHandler.filename);
             const data = this.provider.actionHandler.dataASCII;
-            this.$contentHolder.html(data.replace(/\n/g, "<br />\n").replace(/\f/g, "<br /><br />\n"));
+            const fragment = this.provider.actionHandler.loadContentPaged(data, t);
+            this.$contentHolder.empty().append(fragment);
         }
     };
 }
@@ -698,6 +701,22 @@ class AppActionHandler {
         estreUi.mainSections.ASCII.reload();
 
         this.pageManager.bringPage("braille");
+    }
+
+    loadContentPaged(source, isAscii = f) {
+        source = source.replace(/\n/g, "⏎<br />\n");
+        if (isAscii) source = source.replace(/ /g, " ");
+        const pages = source.split("\f");
+        const fragment = document.createDocumentFragment();
+        const lastIndex = pages.length - 1;
+        for (const [index, page] of pages.entire) {
+            if (index == lastIndex && page.trim().length < 1) continue;
+            const elem = document.createElement(pg);
+            elem.classList.add("page");
+            elem.innerHTML = page;
+            fragment.appendChild(elem);
+        }
+        return fragment;
     }
 }
 

@@ -12,10 +12,10 @@
     <!-- <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, viewport-fit=cover"> -->
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-status-bar-style" content="translucent">
     <meta name="apple-mobile-web-app-title" content="관맹동감" />
     <meta name="description" content="The Braille ASCII file viewer" />
-	<meta name="theme-color" content="#415244">
+	<meta name="theme-color" content="#101311">
     <script>
 // Environment constants
 let isStandalone = !!window.matchMedia("(display-mode: standalone)").matches;
@@ -28,6 +28,83 @@ const isAppleMobile = isIPhone || isIPad || isIPod;
 const isAndroid = navigator.userAgent.includes("Android");
 const isAndroidMobile = isAndroid && isMobile;
 const isSamsungBrowser = navigator.userAgent.includes("SamsungBrowser");
+
+
+// Prevent reload when foldable device is folded or unfolded
+// let isResizing = false;
+// let resizeTimeout;
+
+// // 화면 크기 변화 감지 및 리로드 방지
+// const preventReloadOnFold = () => {
+//     // 화면 크기 변화 시 리로드 방지
+//     window.addEventListener("resize", (e) => {
+//         e.preventDefault();
+//         e.stopPropagation();
+//         e.stopImmediatePropagation();
+        
+//         isResizing = true;
+//         clearTimeout(resizeTimeout);
+        
+//         resizeTimeout = setTimeout(() => {
+//             isResizing = false;
+//         }, 500);
+        
+//         return false;
+//     }, { passive: false, capture: true });
+
+//     // 페이지 가시성 변화 시 리로드 방지
+//     document.addEventListener("visibilitychange", (e) => {
+//         if (isResizing) {
+//             e.preventDefault();
+//             e.stopPropagation();
+//             return false;
+//         }
+//     }, { passive: false, capture: true });
+
+//     // beforeunload 이벤트로 리로드 방지
+//     window.addEventListener("beforeunload", (e) => {
+//         if (isResizing) {
+//             e.preventDefault();
+//             e.returnValue = '';
+//             return '';
+//         }
+//     });
+
+//     // pagehide 이벤트 방지
+//     window.addEventListener("pagehide", (e) => {
+//         if (isResizing) {
+//             e.preventDefault();
+//             return false;
+//         }
+//     }, { passive: false, capture: true });
+// };
+
+// // 폴드 감지를 위한 미디어 쿼리 감지
+// const detectFoldableDevice = () => {
+//     // CSS Environment Variables로 폴드 감지
+//     if (CSS.supports('(display: flex)')) {
+//         try {
+//             const foldQuery = window.matchMedia('(spanning: single-fold-vertical)');
+//             const horizontalFoldQuery = window.matchMedia('(spanning: single-fold-horizontal)');
+            
+//             foldQuery.addListener((e) => {
+//                 isResizing = true;
+//                 setTimeout(() => { isResizing = false; }, 1000);
+//             });
+            
+//             horizontalFoldQuery.addListener((e) => {
+//                 isResizing = true;
+//                 setTimeout(() => { isResizing = false; }, 1000);
+//             });
+//         } catch (ex) {
+//             console.log("Fold detection not supported:", ex);
+//         }
+//     }
+// };
+
+// // 초기화
+// preventReloadOnFold();
+// detectFoldableDevice();
 
 
 // Update viewport-fit for PWA
@@ -77,13 +154,17 @@ if (isStandalone) {
     // is PWA
     const meta = document.createElement("meta");
     meta.name = "viewport";
-    meta.content = "user-scalable=no, width=device-width, initial-scale=1, viewport-fit=cover";
+    meta.content = "user-scalable=no, width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content";
     document.querySelector("head").append(meta);
+    const fit = document.createElement("meta");
+    fit.name = "viewport-fit";
+    fit.content = "cover";
+    document.querySelector("head").append(fit);
 } else {
     // isn't PWA
     const meta = document.createElement("meta");
     meta.name = "viewport";
-    meta.content = "user-scalable=no, width=device-width, initial-scale=1";
+    meta.content = "user-scalable=no, width=device-width, initial-scale=1, interactive-widget=resizes-content";
     document.querySelector("head").append(meta);
 }
 if (isAppleMobile) {
@@ -515,7 +596,7 @@ if (isStandalone) {
                     <ul class="maxWidth">
                         <li><button class="tp_tiled_btn" onclick="appActionHandler.openFile(); estreUi.closeMainMenu(); return false; ">파일 열기</button></li>
                         <hr class="bold spaced" />
-                        <li><button class="tp_tiled_btn" onclick="appActionManager.checkUpateAndForceReload(); return false; ">앱 강제 갱신</button></li>
+                        <li><button class="tp_tiled_btn" onclick="appActionManager.checkUpdateAndForceReload(); return false; ">앱 강제 갱신</button></li>
                         <li><button class="tp_tiled_btn" onclick="setTimeout(_ => { wait(); location.reload(); }, 0); return false; ">앱 다시 시작</button></li>
                         <li><button class="tp_tiled_btn" onclick="appActionManager.checkUpdate(); estreUi.closeMainMenu(); return false; ">앱 업데이트 확인</button></li>
                         <hr class="inset_on_margin_v_half" />
