@@ -140,14 +140,48 @@ class AppPagesProvider {
 
 
     "menu_area_root" = class extends EstrePageHandler {
+        $recentHolder;
+        recentHolder;
+
         $versionHolder;
 
         onBring(handle) {
+            this.$recentHolder = handle.$host.find("ul.recent");
+            this.recentHolder = this.$recentHolder[0];
+
             this.$versionHolder = handle.$host.find(".versions");
         }
 
         onShow(handle) {
+            this.releaseRecent();
             this.updateVersion();
+        }
+
+        onReload(handle) {
+            this.releaseRecent();
+            this.updateVersion();
+
+            return t;
+        }
+
+        releaseRecent() {
+            const recent = ECLS.get("recentFiles", []);
+
+            if (recent.length < 1) this.recentHolder.melt({ message: "최근 불러온 파일 없음" }, "frozenPlaceholder");
+            else {
+                this.$recentHolder.empty();
+                for (const fileinfo of recent) this.recentHolder.worm(fileinfo);
+
+                this.$recentHolder.find(c.c + li + c.c + btn).click(e => {
+                    e.preventDefault();
+
+                    const filename = e.currentTarget.dataset.filename;
+                    this.provider.actionHandler.loadRecent(filename);
+                    estreUi.closeMainMenu();
+
+                    return false;
+                });
+            }
         }
 
         async updateVersion() {
@@ -693,27 +727,82 @@ class AppActionHandler {
         this.dataAscii = this.dataOrigin.toLowerCase();
         this.dataASCII = this.dataOrigin.toUpperCase();
 
+        const recent = ECLS.get("recentFiles", []);
+        const exist = recent.find(it => it.filename == this.filename);
+        if (exist) recent.remove(exist);
+        recent.unshift({ filename: this.filename, size: this.file.size, timestamp: dt.t });
+        while (recent.length > 20) recent.pop();
+        ECLS.set("recentFiles", recent);
+        ECLS.set("file=" + this.filename, this.dataOrigin);
+
         console.log("Loaded file: ", this.filename);
         
         estreUi.appbar.containers.home.reload();
         estreUi.mainSections.braille.reload();
         estreUi.mainSections.ascii.reload();
         estreUi.mainSections.ASCII.reload();
+        estreUi.menuSections.menuArea.containers.root?.handler.releaseRecent();
 
         this.pageManager.bringPage("braille");
     }
 
+    loadRecent(filename) {
+        const content = ECLS.get("file=" + filename, n);
+        if (content != n) {
+            this.filename = filename;
+            this.dataOrigin = content;
+            this.dataBraille = caseFreeASCIIBrailleToUnicode(this.dataOrigin);
+            this.dataAscii = this.dataOrigin.toLowerCase();
+            this.dataASCII = this.dataOrigin.toUpperCase();
+
+            const recent = ECLS.get("recentFiles", []);
+            const exist = recent.splice(recent.findIndex(it => it.filename == this.filename), 1)[0];
+            recent.unshift(exist);
+            ECLS.set("recentFiles", recent);
+
+            console.log("Loaded recent file: ", this.filename);
+            
+            estreUi.appbar.containers.home.reload();
+            estreUi.mainSections.braille.reload();
+            estreUi.mainSections.ascii.reload();
+            estreUi.mainSections.ASCII.reload();
+            estreUi.menuSections.menuArea.containers.root?.handler.releaseRecent();
+
+            this.pageManager.bringPage("braille");
+        } else {
+            note("해당 파일 데이터가 유실되었습니다<br />파일 열기로 직접 열어주세요");
+
+            const recent = ECLS.get("recentFiles", []);
+            const exist = recent.find(it => it.filename == filename);
+            if (exist) recent.remove(exist);
+            ECLS.set("recentFiles", recent);
+            estreUi.menuSections.menuArea.containers.root?.handler.releaseRecent();
+        }
+    }
+
+
     loadContentPaged(source, isAscii = f) {
         if (isAscii) source = source.replace(/ /g, " ");
-        source = source.replace(/\n/g, "⏎<br />\n");
         const pages = source.split("\f");
+        if (pages[pages.length - 1].trim().length < 1) pages.pop();
         const fragment = document.createDocumentFragment();
-        const lastIndex = pages.length - 1;
+        const totalIndex = pages.length;
         for (const [index, page] of pages.entire) {
-            if (index == lastIndex && page.trim().length < 1) continue;
-            const elem = document.createElement(pg);
+            const elem = document.createElement(ol);
             elem.classList.add("page");
-            elem.innerHTML = page;
+            elem.dataset.lead = (parseInt(index) + 1) + "/" + totalIndex;
+            
+            const lines = page.split("\n");
+            if (lines[lines.length - 1].trim().length < 1) lines.pop();
+            const lastLineIndex = lines.length - 1;
+            for (const [no, line] of lines.entire) {
+                const lineElem = document.createElement(li);
+                lineElem.dataset.lineNo = (parseInt(no) + 1) + "\u00A0";
+                lineElem.dataset.trail = no == lastLineIndex ? "␌" : "⏎";
+                lineElem.textContent = line;
+                elem.appendChild(lineElem);
+            }
+
             fragment.appendChild(elem);
         }
         return fragment;

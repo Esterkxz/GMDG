@@ -592,9 +592,15 @@ if (isStandalone) {
     <nav id="mainMenu" class="left" data-opened="">
         <section id="menuArea" class="vfv_scroll" data-static="1">
             <div class="container" data-container-id="root" data-static="1">
-                <article class="rootMenu inset_on_margin_t" data-article-id="main" data-static="1">
+                <article class="rootMenu constraint" data-article-id="main" data-static="1">
                     <ul class="maxWidth">
                         <li><button class="tp_tiled_btn" onclick="appActionHandler.openFile(); estreUi.closeMainMenu(); return false; ">파일 열기</button></li>
+                        <hr class="bold spaced" />
+                    </ul>
+                    <ul class="maxWidth recent" data-lead="최근 파일" data-solid="1" data-frozen-placeholder="[['li.line_block.placeholder.text_light.font_sr14.font_light', [['span', '|message|']]]]">
+                        <li><button class="tp_tiled_btn ellipsis_h" data-filename="|filename|"><span>|filename|</span></button></li>
+                    </ul>
+                    <ul class="maxWidth inset_on_margin_b">
                         <hr class="bold spaced" />
                         <li><button class="tp_tiled_btn" onclick="appActionManager.checkUpdateAndForceReload(); return false; ">앱 강제 갱신</button></li>
                         <li><button class="tp_tiled_btn" onclick="setTimeout(_ => { wait(); location.reload(); }, 0); return false; ">앱 다시 시작</button></li>
