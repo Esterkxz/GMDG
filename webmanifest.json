@@ -1,4 +1,5 @@
 {
+    "id": "./",
     "name": "My own EstreUI.js sample application 1",
     "short_name": "EstreUI app 1",
     "description": "Basic application model (has application bar, left main menu, bottom root tab)",
@@ -16,11 +17,16 @@
             "purpose": "maskable"
         }
     ],
-    "start_url": ".",
+    "start_url": "./serviceLoader.html",
     "theme_color": "#212426",
     "background_color": "#F1F1FA",
     "display_override": ["minimal-ui", "standalone"],
     "display": "window-controls-overlay",
-    "orientation": "any",
-    "scope": "."
+    "orientation": "natural",
+    "scope": ".",
+    "serviceworker": {
+        "scope": "./",
+        "src": "./serviceWorker.js",
+        "updateViaCache": false
+    }
 }

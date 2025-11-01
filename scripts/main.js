@@ -118,7 +118,7 @@ class AppPagesProvider {
     //declare handler of pages
 
     //"own shorter id" = page handler implementation class from extends EstrePageHandler or empty class(function type constructor)
-    "wait" = class extends EstrePageHandler {};
+    "wait" = class extends EstreLottieAnimatedHandler {};
 
     "home" = class extends EstrePageHandler {};
 
@@ -221,7 +221,7 @@ class AppActionManager {
     #actionHandler = null;
     get actionHandler() { return this.#actionHandler; }
 
-    get isApp() { return window.app != n; }
+    get isApp() { return window.app != n && window.app.request != n; }
 
     constructor(pageManager, sessionManager, actionHandler) {
         this.#pageManager = pageManager;
@@ -257,7 +257,8 @@ class AppActionManager {
         if (installing != n && installing.state == "installing") {
             navigator.serviceWorker.ready.then(reg => {
                 const worker = reg?.active;
-                console.log("Force activate installing service worker: ", worker);
+                if (window.isDebug) console.log("Force activate installing service worker: ", worker);
+                else if (window.isLog) console.log("Force activate installing service worker: " + worker.scriptURL);
             });
         }
 
@@ -270,7 +271,8 @@ class AppActionManager {
                 await swHandler.clearCache(controller);
                 waiting.addEventListener("statechange", e => {
                     if (waiting.state == "activated") {
-                        console.log("Apply activated service worker by reload: ", waiting);
+                        if (window.isDebug) console.log("Apply activated service worker by reload: ", waiting);
+                        else if (window.isLog) console.log("Apply activated service worker by reload: " + waiting.scriptURL);
                         location.reload();
                     }
                 });
@@ -306,7 +308,7 @@ class AppActionManager {
         if (this.#swUpdateBeforeAsk) {
             // vv Method 1: Install new service worker immediately and prompt user to restart app when activated new service worker
             if (!swHandler.isInitialSetup) {
-                this.controller?.let(it => this.clearCache(it));
+                // this.controller?.let(it => this.clearCache(it));
                 note("Now installing new version of app...");
             }
         }
@@ -379,7 +381,7 @@ class AppActionManager {
     async onControllerChangedToNewServiceWorker(event) {
         const swHandler = this.swHandler;
         const version = await swHandler.getVersion();
-        console.log("New service worker controller is ready: v" + version);
+        if (window.isLogging) console.log("New service worker controller is ready: v" + version);
         this.setServiceWorkerControllerEvents();
     }
 
@@ -388,9 +390,18 @@ class AppActionManager {
         const controller = swHandler.controller;
         controller.addEventListener("statechange", e => {
             if (controller.state == "redundant") {
-                console.log("Current service worker became redundant: ", controller);
-                console.log("To be reloaded the app to apply new service worker");
-                location.reload();
+                if (window.isDebug) console.log("Current service worker became redundant: ", controller);
+                else if (window.isLog) console.log("Current service worker became redundant: " + controller.scriptURL);
+                const reloadMessage = "To be reloaded the app to apply new service worker";
+                if (swHandler.controller != n && swHandler.controller != controller) {
+                    if (window.isLogging) console.log(reloadMessage);
+                    location.reload();
+                } else swHandler.service.addEventListener("controllerchange", e => {
+                    if (window.isDebug) console.log("New service worker is controlling the app: ", swHandler.controller);
+                    else if (window.isLog) console.log("New service worker is controlling the app: " + swHandler.controller.scriptURL);
+                    if (window.isLogging) console.log(reloadMessage);
+                    location.reload();
+                });
             }
         });
 
@@ -405,13 +416,14 @@ class AppActionManager {
         const swHandler = this.swHandler;
         const version = await swHandler.getVersion(worker);
         const [native, web] = version.split(hp);
+        const [android, ios] = native.includes(ss) ? native.split(ss) : [native, native];
         const currentNative = this.sessionManager.appVersion;
         
-        console.log("Check service Worker version: " + version + "\n - native: " + native + "\n - web: ", web);
+        if (window.isLogging) console.log("Check service Worker version: " + version + "\n - Android: " + android + "\n - iOS: " + ios + "\n - web: ", web);
         
         let isNewNative = f;
         const [major, minor, patch] = currentNative.split(".").map(it => it[0] == t0 ? 0 : parseInt(it));
-        const [newMajor, newMinor, newPatch] = native.split(".").map(it => parseInt(it));
+        const [newMajor, newMinor, newPatch] = (isAndroid ? android : ios).split(".").map(it => parseInt(it));
     
         if (newMajor > major) isNewNative = t;
         else if (newMajor == major && newMinor > minor) isNewNative = t;
@@ -480,13 +492,13 @@ class AppActionManager {
             try {
                 const worker = await swHandler.update();
                 if (worker) {
-                    console.log("New service worker state: ", worker.state);
+                    if (window.isLogging) console.log("New service worker state: " + worker.state);
                     if (worker.state == "activated") resolve(worker);
                     else if (worker.state == "redundant") resolve();
                     else {
                         if (!this.#swUpdateBeforeAsk) swHandler.skipWaiting(worker);
                         worker.addEventListener("statechange", e => {
-                            console.log("New service worker changed state: ", worker.state);
+                            if (window.isLogging) console.log("New service worker changed state: " + worker.state);
                             if (worker.state == "activated") {
                                 swHandler.clientsClaim(worker);
                                 resolve(worker);
@@ -878,7 +890,7 @@ AppUserHandle.setOn(() => {
 
 
 // Own application and EstreUI initializing
-$(document).ready((e) => {
+$(document).ready((e) => setTimeout(_ => {
 
     //<= to do implement my own initializing
 
@@ -907,6 +919,4 @@ $(document).ready((e) => {
         if (isStraight) setTimeout(() => estreUi.checkOnReady(), 0);
         else estreUi.checkOnReady();
     });
-
-
-})
+}, 1));
