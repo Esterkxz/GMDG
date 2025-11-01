@@ -1,4 +1,4 @@
-const INSTALLATION_VERSION_NAME = "0.9.0-r20251101b";
+const INSTALLATION_VERSION_NAME = "0.9.0-App1/r20251101b";
 // ^^ Use for check new update "Native application(webview) version(or Android/iOS version combo) - PWA release version"
 // ex) "1.0.1/1.0.0-r20251101k"
  
@@ -20,7 +20,7 @@ const INSTALLATION_FILE_LIST = [
 
 
 // Common files cache - Be changes some time but, well not changed very often
-const CACHE_NAME_COMMON_FILES = "common-files-cache-v1-20251101b";
+const CACHE_NAME_COMMON_FILES = "App1-common-files-cache-v1-20251101b";
 
 const COMMON_FILES_TO_CACHE = [
     "./",
@@ -48,7 +48,7 @@ const COMMON_FILES_TO_CACHE = [
 
 
 // Static files cache - Rarely changes after release
-const CACHE_NAME_STATIC_FILES = "static-files-cache-v1-20251101b";
+const CACHE_NAME_STATIC_FILES = "App1-static-files-cache-v1-20251101b";
 
 const STATIC_FILES_TO_CACHE = [
     "./favicon.ico",
@@ -86,7 +86,7 @@ const STATIC_FILES_TO_CACHE = [
 
 
 // Stony files cache - Very frequently changes and heavy sized files (for background caching)
-const CACHE_NAME_STONY_FILES = "stony-files-cache-v1-20251101b";
+const CACHE_NAME_STONY_FILES = "App1-stony-files-cache-v1-20251101b";
 
 const STONY_FILES_TO_CACHE = [
 ];
