@@ -916,7 +916,7 @@ $(document).ready((e) => setTimeout(_ => {
         if (await appActionManager.onReadyEstreUi()) return;
 
         //notification finished loading my own app to Estre UI
-        if (isStraight) setTimeout(() => estreUi.checkOnReady(), 0);
+        if (isStraight) postQueue(_ => estreUi.checkOnReady());
         else estreUi.checkOnReady();
     });
 }, 1));
