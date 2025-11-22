@@ -1,4 +1,5 @@
 {
+    "id": "./",
     "name": "⠈⠧⠒⠑⠗⠶⠊⠥⠶⠈⠣⠢",
     "short_name": "관맹동감",
     "description": "The Braille ASCII file viewer",
@@ -17,11 +18,16 @@
             "purpose": "maskable"
         }
     ],
-    "start_url": ".",
+    "start_url": "./serviceLoader.html",
     "theme_color": "#101311",
     "background_color": "#EFEFEF",
     "display_override": ["minimal-ui", "standalone"],
     "display": "window-controls-overlay",
-    "orientation": "any",
-    "scope": "."
+    "orientation": "natural",
+    "scope": ".",
+    "serviceworker": {
+        "scope": "./",
+        "src": "./serviceWorker.js",
+        "updateViaCache": false
+    }
 }
