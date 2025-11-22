@@ -529,7 +529,7 @@ class AppActionManager {
         }, 60 * 60 * 1000);
         // ^^ Customize interval time for check update of service worker
 
-        estreUi.menuSections.menuArea.containers.root?.handler.updateVersion();
+        estreUi.menuSections.menuArea?.containers.root?.handler.updateVersion();
     }
 
     async checkPostNewNativeAppVersion(worker = this.swHandler.worker, userConfirmCallback = async isPositive => {}) {
